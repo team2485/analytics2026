@@ -561,6 +561,8 @@
     .allianceColumn {
         width: 300px;
         margin-left: -15px;
+        display: flex;
+        flex-wrap: wrap;
         
     }
 
@@ -584,6 +586,9 @@
         margin-left: -50px;
         margin-top: -350px;
         margin-bottom: 50px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
     }
 
     .teamRow {
