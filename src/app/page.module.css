@@ -133,6 +133,17 @@ hr.subsubheading {
   justify-content: space-between;
   width: 350px;
   align-self: center;
+  margin: auto;
+}
+
+.terrainBox2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 5px;
+  width: 350px;
+  align-self: center;
+  margin: auto;
 }
 
 .Auto {
@@ -161,9 +172,10 @@ hr.subsubheading {
 }
 
 .defenseBox {
-  display: grid;
-  grid-template-columns: 180px 180px;
+  display: flex;
+  flex-direction: row;
   align-self: center;
+  gap: 5px;
 }
 
 .defenseBox > :last-child {

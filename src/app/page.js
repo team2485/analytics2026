@@ -365,7 +365,7 @@ console.log("page",matchType)
               <ThreeOptionRadio
                 onThreeOptionRadioChange={handleClimbYesNo}
                 internalName="climbYesNo"
-                defaultValue={climbYesNo}
+                defaultValue={2}
                 value1="None"
                 value2="Fail"
                 value3="Success"
@@ -418,43 +418,11 @@ console.log("page",matchType)
              <br></br>
              <SubHeader subHeaderName={"Defense Location"}></SubHeader>
              <div className={styles.defenseBox}>
-               <Checkbox visibleName={"Alliance Zone"} internalName={"defenselocationoutpost"}></Checkbox>
+               <Checkbox visibleName={"Alliance Zone"} internalName={"defenselocationaz"}></Checkbox>
                <Checkbox visibleName={"Neutral Zone"} internalName={"defenselocationnz"}></Checkbox>
-               <Checkbox visibleName={"Bump"} internalName={"defenselocationbump"}></Checkbox>
-               <Checkbox visibleName={"Trench"} internalName={"defenselocationtrench"}></Checkbox>
-               <Checkbox visibleName={"Tower"} internalName={"defenselocationtower"}></Checkbox>
-               <Checkbox visibleName={"Hub"} internalName={"defenselocationhub"}></Checkbox>
-               <Checkbox visibleName={"Outpost"} internalName={"defenselocationoutpost"}></Checkbox>
              </div>
            </div>
-           <div className={styles.PostMatch}>
-            <Header headerName={"Endgame"}/>
-            <br></br>
-            <SubHeader subHeaderName={"Climb"}></SubHeader>
-            <div>
-              <ClimbCheckbox></ClimbCheckbox>
-            </div>
-
-            <Checkbox visibleName={"Wide Climb?"} internalName={"wideclimb"} />
-
-           </div>
-
-
-            <div className={styles.PostMatch}>       
-              <Header headerName={"Post-Match"}/>
-              <br></br>
-                <div className={styles.percentFuel}>
-                  <TextInput 
-                    visibleName={"% of Alliance Fuel Scored by Robot:"} 
-                    internalName={"percentfuel"} 
-                    defaultValue={""}
-                    type={"text"}
-                  />
-                </div>
-
-                <br></br>
-
-                <SubHeader subHeaderName={"Shooting Mechanism"}></SubHeader>
+           <SubHeader subHeaderName={"Shooting Mechanism"}></SubHeader>
                 <div className= {styles.shootingBox}>
                   <TwoOptionRadio
                     onTwoOptionRadioChange={handleShootingMechanism}
@@ -488,9 +456,26 @@ console.log("page",matchType)
                   <Checkbox visibleName={"Bump"} internalName={"bump"}></Checkbox>
                   <Checkbox visibleName={"Trench"} internalName={"trench"}></Checkbox>
                 </div>
+                <div className={styles.terrainBox2}>
+                  <Checkbox visibleName={"Stuck on Fuel Easily?"} internalName={"stuckOnFuel"} />
+                  <Checkbox visibleName={"Stuck on Bump Easily?"} internalName={"stuckOnBump"} />
+                </div>
 
-                <Checkbox visibleName={"Stuck on Fuel Easily?"} internalName={"stuckOnFuel"} />
-              
+           <div className={styles.PostMatch}>
+            <Header headerName={"Endgame"}/>
+            <br></br>
+            <SubHeader subHeaderName={"Climb"}></SubHeader>
+            <div>
+              <ClimbCheckbox></ClimbCheckbox>
+            </div>
+
+            <Checkbox visibleName={"Wide Climb?"} internalName={"wideclimb"} />
+
+           </div>
+
+
+            <div className={styles.PostMatch}>       
+              <Header headerName={"Post-Match"}/>
                 <div className={styles.Qual}>
                   <Qualitative                   
                     visibleName={"Hopper Capacity"}
@@ -501,17 +486,13 @@ console.log("page",matchType)
                     internalName={"maneuverability"}
                     description={"Maneuverability"}/>
                   <Qualitative                   
-                    visibleName={"Durability"}
-                    internalName={"durability"}
-                    description={"Durability"}/>
-                  <Qualitative                   
                     visibleName={"Fuel Speed"}
                     internalName={"fuelspeed"}
                     description={"Fuel Speed"}/>
                   <Qualitative                   
-                    visibleName={"Passing Speed"}
-                    internalName={"passingspeed"}
-                    description={"Passing Speed"}/>
+                    visibleName={"Passing Quantity"}
+                    internalName={"passingquantity"}
+                    description={"Passing Quantity"}/>
                   <Qualitative                   
                     visibleName={"Climb Speed"}
                     internalName={"climbspeed"}
@@ -520,10 +501,6 @@ console.log("page",matchType)
                     visibleName={"Auto Declimb Speed"}
                     internalName={"autodeclimbspeed"}
                     description={"Auto Declimb Speed"}/>
-                  <Qualitative                   
-                    visibleName={"Bump Speed"}
-                    internalName={"bumpspeed"}
-                    description={"Bump Speed"}/>
                   <Qualitative                   
                     visibleName={"Defense Evasion"}
                     internalName={"defenseevasion"}
