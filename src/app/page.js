@@ -196,8 +196,6 @@ if (playedDefenseValue && defenseType) {
     
     // Field name fixes: normalize to lowercase with no spaces
     // "win auto" -> "winauto" (unchecked = not in FormData, so default false)
-    data.winauto = data["win auto"] === true;
-    delete data["win auto"];
 
     data.autofuel = data["auto fuel"] != null && data["auto fuel"] !== "" ? Number(data["auto fuel"]) : 0;
     delete data["auto fuel"];
@@ -380,9 +378,7 @@ console.log("page",matchType)
                   value3="Right"
                 />
                 )}
-              
-          </div>
-              <Checkbox visibleName={"Win Auto?"} internalName={"win auto"}/>
+              </div>
             </div>
               
               <br></br>
