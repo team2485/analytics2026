@@ -23,7 +23,6 @@ CREATE TABLE eventCompetitionYear (
    AutoClimb INT, -- 0=None, 1=Fail, 2=Success
    AutoClimbPosition INT, -- 0=Left, 1=Center, 2=Right (only set if AutoClimb is Success)
    AutoFuel INT,
-   WinAuto BOOLEAN,
    
    -- Tele
    IntakeGround BOOLEAN,
@@ -33,13 +32,8 @@ CREATE TABLE eventCompetitionYear (
    PassingDump BOOLEAN,
    ShootWhileMove BOOLEAN,
    TeleFuel INT,
-   DefenseLocationOutpost BOOLEAN,
-   DefenseLocationTower BOOLEAN,
-   DefenseLocationHub BOOLEAN,
    DefenseLocationNZ BOOLEAN,
    DefenseLocationAZ BOOLEAN,
-   DefenseLocationTrench BOOLEAN,
-   DefenseLocationBump BOOLEAN,
    
    -- End
    EndClimbPosition INT, -- 0=LeftL3, 1=LeftL2, 2=LeftL1, 3=CenterL3, 4=CenterL2, 5=CenterL1, 6=RightL3, 7=RightL2, 8=RightL1 9=None
@@ -50,7 +44,7 @@ CREATE TABLE eventCompetitionYear (
    Bump BOOLEAN,
    Trench BOOLEAN,
    StuckOnFuel BOOLEAN,
-   FuelPercent INT, -- Percentage as integer (0-100)
+   -- Percentage as integer (0-100)
    PlayedDefense BOOLEAN,
    Defense INT, -- 0=weak, 1=harassment, 2=game changing (only set if PlayedDefense is true)
    
@@ -63,7 +57,7 @@ CREATE TABLE eventCompetitionYear (
    DefenseEvasion INT DEFAULT -1,
    ClimbSpeed INT DEFAULT -1,
    FuelSpeed INT DEFAULT -1,
-   PassingSpeed INT DEFAULT -1,
+   PassingQuantity INT DEFAULT -1,
    AutoDeclimbSpeed INT DEFAULT -1,
    BumpSpeed INT DEFAULT -1,
    
@@ -76,13 +70,13 @@ CREATE TABLE eventCompetitionYear (
 -- Example INSERT statement
 INSERT INTO eventCompetitionYear (
    ScoutName, ScoutTeam, Team, Match, MatchType, NoShow,
-   AutoClimb, AutoClimbPosition, AutoFuel, WinAuto,
+   AutoClimb, AutoClimbPosition, AutoFuel,
    IntakeGround, IntakeOutpost, PassingBulldozer, PassingShooter, PassingDump, ShootWhileMove, TeleFuel,
-   DefenseLocationOutpost, DefenseLocationTower, DefenseLocationHub, DefenseLocationNZ, DefenseLocationAZ, DefenseLocationTrench, DefenseLocationBump,
+   DefenseLocationNZ, DefenseLocationAZ,
    EndClimbPosition, WideClimb,
-   ShootingMechanism, Bump, Trench, StuckOnFuel, FuelPercent, PlayedDefense, Defense,
-   Aggression, ClimbHazard, HopperCapacity, Maneuverability, Durability, DefenseEvasion,
-   ClimbSpeed, FuelSpeed, PassingSpeed, AutoDeclimbSpeed, BumpSpeed,
+   ShootingMechanism, Bump, Trench, StuckOnFuel, PlayedDefense, Defense,
+   Aggression, ClimbHazard, HopperCapacity, Maneuverability, DefenseEvasion,
+   ClimbSpeed, FuelSpeed, PassingQuantity, AutoDeclimbSpeed, BumpSpeed,
    GeneralComments, BreakdownComments, DefenseComments
 )
 VALUES (

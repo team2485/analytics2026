@@ -3,8 +3,8 @@ import styles from "./ClimbCheckbox.module.css";
 import { useState } from "react";
 
 export default function ClimbCheckbox({ internalName, changeListener }) {
-    // Map: 0=LeftL3, 1=LeftL2, 2=LeftL1, 3=CenterL3, 4=CenterL2, 5=CenterL1, 6=RightL3, 7=RightL2, 8=RightL1
-    const [selectedValue, setSelectedValue] = useState(null);
+    // Map: 0=LeftL3, 1=LeftL2, 2=LeftL1, 3=CenterL3, 4=CenterL2, 5=CenterL1, 6=RightL3, 7=RightL2, 8=RightL1, 9=None
+    const [selectedValue, setSelectedValue] = useState("9"); // Default to "9" (None)
 
     const handleChange = (value) => {
         setSelectedValue(value);
@@ -147,6 +147,7 @@ export default function ClimbCheckbox({ internalName, changeListener }) {
                             value="9"
                             checked={selectedValue === "9"}
                             onChange={() => handleChange("9")}
+                            defaultChecked
                         />
                         None
                     </label>

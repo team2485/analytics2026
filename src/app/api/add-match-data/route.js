@@ -90,8 +90,7 @@ export async function POST(req) {
   // Tele Data: default unchecked/missing to false, telefuel to 0
   const teleBooleans = [
     'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump',
-    'shootwhilemove', 'defenselocationoutpost', 'defenselocationtower', 'defenselocationhub',
-    'defenselocationaz', 'defenselocationnz', 'defenselocationtrench', 'defenselocationbump'
+    'shootwhilemove','defenselocationaz', 'defenselocationnz',
   ];
   for (const key of teleBooleans) {
     if (!_.isBoolean(body[key])) body[key] = false;
@@ -110,13 +109,8 @@ export async function POST(req) {
       _.isBoolean(body.passingdump) &&
       _.isBoolean(body.shootwhilemove) &&
       _.isNumber(body.telefuel) &&
-      _.isBoolean(body.defenselocationoutpost) &&
-      _.isBoolean(body.defenselocationtower) &&
-      _.isBoolean(body.defenselocationhub) &&
       _.isBoolean(body.defenselocationaz) &&
-      _.isBoolean(body.defenselocationnz) &&
-      _.isBoolean(body.defenselocationtrench) &&
-      _.isBoolean(body.defenselocationbump)
+      _.isBoolean(body.defenselocationnz)
     )
   ) {
     return NextResponse.json({ message: "Invalid Tele Data!" }, { status: 400 });
@@ -143,8 +137,6 @@ export async function POST(req) {
   for (const key of postmatchBooleans) {
     if (!_.isBoolean(body[key])) body[key] = false;
   }
-  const fuelPercentNum = Number(body.fuelpercent);
-  body.fuelpercent = (Number.isFinite(fuelPercentNum) && fuelPercentNum >= 0 && fuelPercentNum <= 100) ? fuelPercentNum : 0;
 
   // Validate Postmatch Data
   if (
@@ -180,7 +172,7 @@ if (body.playeddefense) {
   const qualitativeFields = [
     'aggression', 'climbhazard', 'hoppercapacity', 'maneuverability',
     'durability', 'defenseevasion', 'climbspeed', 'fuelspeed',
-    'passingspeed', 'autodeclimbspeed', 'bumpspeed'
+    'passingquantity', 'autodeclimbspeed', 'bumpspeed'
   ];
   for (const field of qualitativeFields) {
     const v = Number(body[field]);
@@ -200,24 +192,23 @@ if (body.playeddefense) {
   let resp = await sql`
     INSERT INTO phd2026 (
       scoutname, scoutteam, team, match, matchtype, noshow,
-      autoclimb, autoclimbposition, autofuel, winauto,
+      autoclimb, autoclimbposition, autofuel,
       intakeground, intakeoutpost, passingbulldozer, passingshooter, passingdump, shootwhilemove, telefuel,
-      defenselocationoutpost, defenselocationtower, defenselocationhub, defenselocationaz, defenselocationnz, defenselocationtrench, defenselocationbump,
-      endclimbposition, wideclimb,
-      shootingmechanism, bump, trench, stuckonfuel, fuelpercent, playeddefense, defense,
-      aggression, climbhazard, hoppercapacity, maneuverability, durability, defenseevasion,
-      climbspeed, fuelspeed, passingspeed, autodeclimbspeed, bumpspeed,
+      defenselocationaz, defenselocationnz,endclimbposition, wideclimb,
+      shootingmechanism, bump, trench, stuckonfuel, playeddefense, defense,
+      aggression, climbhazard, hoppercapacity, maneuverability, defenseevasion,
+      climbspeed, fuelspeed, passingquantity, autodeclimbspeed, bumpspeed,
       generalcomments, breakdowncomments, defensecomments
     )
     VALUES (
       ${body.scoutname}, ${body.scoutteam}, ${body.team}, ${adjustedMatch}, ${body.matchType}, ${body.noshow},
-      ${body.autoclimb}, ${body.autoclimb === 2 ? body.autoclimbposition : null}, ${body.autofuel}, ${body.winauto},
+      ${body.autoclimb}, ${body.autoclimb === 2 ? body.autoclimbposition : null}, ${body.autofuel},
       ${body.intakeground}, ${body.intakeoutpost}, ${body.passingbulldozer}, ${body.passingshooter}, ${body.passingdump}, ${body.shootwhilemove}, ${body.telefuel},
-      ${body.defenselocationoutpost}, ${body.defenselocationtower}, ${body.defenselocationhub}, ${body.defenselocationaz}, ${body.defenselocationnz}, ${body.defenselocationtrench}, ${body.defenselocationbump},
+      ${body.defenselocationaz}, ${body.defenselocationnz},
       ${body.endclimbposition}, ${body.wideclimb},
       ${body.shootingmechanism}, ${body.bump}, ${body.trench}, ${body.stuckonfuel}, ${body.fuelpercent}, ${body.playeddefense}, ${body.defense},
       ${body.aggression}, ${body.climbhazard}, ${body.hoppercapacity}, ${body.maneuverability}, ${body.durability}, ${body.defenseevasion},
-      ${body.climbspeed}, ${body.fuelspeed}, ${body.passingspeed}, ${body.autodeclimbspeed}, ${body.bumpspeed},
+      ${body.climbspeed}, ${body.fuelspeed}, ${body.passingquantity}, ${body.autodeclimbspeed}, ${body.bumpspeed},
       ${body.generalcomments}, ${body.breakdowncomments || null}, ${body.defensecomments || null}
     )
   `;
