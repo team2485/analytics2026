@@ -84,7 +84,7 @@
 
 .Container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     gap: 20px;
 }
@@ -254,7 +254,7 @@
 
 .Container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .incrementBox {
@@ -277,3 +277,19 @@
 .NumericInput {
     margin-bottom: -20px;
 }
+
+.foulCounterBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: auto;
+}
+
+.fCommentBox {
+    display:block;
+}
+.fCommentBoxOff {
+    display: none;
+}
+
+
