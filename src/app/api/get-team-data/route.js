@@ -59,7 +59,7 @@ export async function GET(request) {
       };
     }
     // Qualitative ratings (0-5 scale, -1 for not rated)
-    if (['aggression', 'climbhazard', 'hoppercapacity', 'maneuverability', 'durability', 'defenseevasion', 'climbspeed', 'fuelspeed', 'passingspeed', 'autodeclimbspeed', 'bumpspeed'].includes(index)) {
+    if (['climbhazard', 'hoppercapacity', 'maneuverability', 'defenseevasion', 'climbspeed', 'fuelspeed', 'passingquantity', 'autodeclimbspeed'].includes(index)) {
       return arr => {
         let filtered = arr.filter(row => row[index] != -1 && row[index] != null).map(row => row[index]);
         return filtered.length === 0 ? -1 : mean(filtered);
@@ -763,17 +763,14 @@ export async function GET(request) {
     }
   
     return [
-      { name: "Aggression*", rating: safeAverage('aggression', true) },
       { name: "Climb Hazard*", rating: safeAverage('climbhazard', true) },
       { name: "Hopper Capacity", rating: safeAverage('hoppercapacity') },
       { name: "Maneuverability", rating: safeAverage('maneuverability') },
-      { name: "Durability", rating: safeAverage('durability') },
       { name: "Defense Evasion", rating: safeAverage('defenseevasion') },
       { name: "Climb Speed", rating: safeAverage('climbspeed') },
       { name: "Fuel Speed", rating: safeAverage('fuelspeed') },
-      { name: "Passing Speed", rating: safeAverage('passingspeed') },
+      { name: "Passing Quantity", rating: safeAverage('passingquantity') },
       { name: "Auto Declimb Speed", rating: safeAverage('autodeclimbspeed') },
-      { name: "Bump Speed", rating: safeAverage('bumpspeed') },
     ];
   }
   

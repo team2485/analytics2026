@@ -123,7 +123,7 @@ function ScoutingApp() {
     leave: false,
     autoClimb: 0,
     endgame: { none: 0, L1: 0, L2: 0, L3: 0, fail: 0},
-    qualitative: { fuelspeed: 0, maneuverability: 0, durability: 0, collectioncapacity: 0, passingspeed: 0, climbingspeed: 0, autodeclimbspeed: 0, bumpspeed: 0, defenseevasion: 0, aggression: 0, climbhazard: 0 }
+    qualitative: { fuelspeed: 0, maneuverability: 0, collectioncapacity: 0, passingquantity: 0, climbingspeed: 0, autodeclimbspeed: 0, defenseevasion: 0, climbhazard: 0 }
   };
 
   // Show loading until data is ready
@@ -268,14 +268,11 @@ function ScoutingApp() {
   const radarData = [
     { qual: 'fuelspeed', team1: filterNegative(data?.team1?.qualitative?.fuelspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.fuelspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.fuelspeed) || 0 },
     { qual: 'maneuverability', team1: filterNegative(data?.team1?.qualitative?.maneuverability) || 0, team2: filterNegative(data?.team2?.qualitative?.maneuverability) || 0, team3: filterNegative(data?.team3?.qualitative?.maneuverability) || 0 },
-    { qual: 'durability', team1: filterNegative(data?.team1?.qualitative?.durability) || 0, team2: filterNegative(data?.team2?.qualitative?.durability) || 0, team3: filterNegative(data?.team3?.qualitative?.durability) || 0 },
     { qual: 'collectioncapacity', team1: filterNegative(data?.team1?.qualitative?.hoppercapacity) || 0, team2: filterNegative(data?.team2?.qualitative?.hoppercapacity) || 0, team3: filterNegative(data?.team3?.qualitative?.hoppercapacity) || 0 },
-    { qual: 'passingspeed', team1: filterNegative(data?.team1?.qualitative?.passingspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.passingspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.passingspeed) || 0 },
+    { qual: 'passingquantity', team1: filterNegative(data?.team1?.qualitative?.passingquantity) || 0, team2: filterNegative(data?.team2?.qualitative?.passingquantity) || 0, team3: filterNegative(data?.team3?.qualitative?.passingquantity) || 0 },
     { qual: 'climbingspeed', team1: filterNegative(data?.team1?.qualitative?.climbspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.climbspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.climbspeed) || 0 },
     { qual: 'autodeclimbspeed', team1: filterNegative(data?.team1?.qualitative?.autodeclimbspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.autodeclimbspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.autodeclimbspeed) || 0 },
-    { qual: 'bumpspeed', team1: filterNegative(data?.team1?.qualitative?.bumpspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.bumpspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.bumpspeed) || 0 },
     { qual: 'defenseevasion', team1: filterNegative(data?.team1?.qualitative?.defenseevasion) || 0, team2: filterNegative(data?.team2?.qualitative?.defenseevasion) || 0, team3: filterNegative(data?.team3?.qualitative?.defenseevasion) || 0 },
-    { qual: 'aggression', team1: filterNegative(data?.team1?.qualitative?.aggression) || 0, team2: filterNegative(data?.team2?.qualitative?.aggression) || 0, team3: filterNegative(data?.team3?.qualitative?.aggression) || 0 },
     { qual: 'climbhazard', team1: filterNegative(data?.team1?.qualitative?.climbhazard) || 0, team2: filterNegative(data?.team2?.qualitative?.climbhazard) || 0, team3: filterNegative(data?.team3?.qualitative?.climbhazard) || 0 }
   ];
 
@@ -283,14 +280,11 @@ function ScoutingApp() {
   const redRadarData = [
     { qual: 'fuelspeed', team1: filterNegative(data?.team4?.qualitative?.fuelspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.fuelspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.fuelspeed) || 0 },
     { qual: 'maneuverability', team1: filterNegative(data?.team4?.qualitative?.maneuverability) || 0, team2: filterNegative(data?.team5?.qualitative?.maneuverability) || 0, team3: filterNegative(data?.team6?.qualitative?.maneuverability) || 0 },
-    { qual: 'durability', team1: filterNegative(data?.team4?.qualitative?.durability) || 0, team2: filterNegative(data?.team5?.qualitative?.durability) || 0, team3: filterNegative(data?.team6?.qualitative?.durability) || 0 },
     { qual: 'collectioncapacity', team1: filterNegative(data?.team4?.qualitative?.hoppercapacity) || 0, team2: filterNegative(data?.team5?.qualitative?.hoppercapacity) || 0, team3: filterNegative(data?.team6?.qualitative?.hoppercapacity) || 0 },
-    { qual: 'passingspeed', team1: filterNegative(data?.team4?.qualitative?.passingspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.passingspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.passingspeed) || 0 },
+    { qual: 'passingquantity', team1: filterNegative(data?.team4?.qualitative?.passingquantity) || 0, team2: filterNegative(data?.team5?.qualitative?.passingquantity) || 0, team3: filterNegative(data?.team6?.qualitative?.passingquantity) || 0 },
     { qual: 'climbingspeed', team1: filterNegative(data?.team4?.qualitative?.climbspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.climbspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.climbspeed) || 0 },
     { qual: 'autodeclimbspeed', team1: filterNegative(data?.team4?.qualitative?.autodeclimbspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.autodeclimbspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.autodeclimbspeed) || 0 },
-    { qual: 'bumpspeed', team1: filterNegative(data?.team4?.qualitative?.bumpspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.bumpspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.bumpspeed) || 0 },
     { qual: 'defenseevasion', team1: filterNegative(data?.team4?.qualitative?.defenseevasion) || 0, team2: filterNegative(data?.team5?.qualitative?.defenseevasion) || 0, team3: filterNegative(data?.team6?.qualitative?.defenseevasion) || 0 },
-    { qual: 'aggression', team1: filterNegative(data?.team4?.qualitative?.aggression) || 0, team2: filterNegative(data?.team5?.qualitative?.aggression) || 0, team3: filterNegative(data?.team6?.qualitative?.aggression) || 0 },
     { qual: 'climbhazard', team1: filterNegative(data?.team4?.qualitative?.climbhazard) || 0, team2: filterNegative(data?.team5?.qualitative?.climbhazard) || 0, team3: filterNegative(data?.team6?.qualitative?.climbhazard) || 0 }
   ];
 

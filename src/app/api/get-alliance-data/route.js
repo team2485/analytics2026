@@ -126,17 +126,14 @@ function initializeTeamData(row, auto, tele, end, frcAPITeamInfo) {
     defense: countDefenseRow(row),
     foulsArray: [Number(row.fouls) || 0],
     qualitative: {
-      aggression: row.aggression,
       climbhazard: row.climbhazard,
       hoppercapacity: row.hoppercapacity,
       maneuverability: row.maneuverability,
-      durability: row.durability,
       defenseevasion: row.defenseevasion,
       climbspeed: row.climbspeed,
       fuelspeed: row.fuelspeed,
-      passingspeed: row.passingspeed,
+      passingquantity: row.passingquantity,
       autodeclimbspeed: row.autodeclimbspeed,
-      bumpspeed: row.bumpspeed,
     },
   };
 }
@@ -186,17 +183,14 @@ function accumulateTeamData(teamData, row, auto, tele, end) {
   teamData.foulsArray.push(Number(row.fouls) || 0);
 
   // Accumulate qualitative ratings (sum them for averaging later)
-  teamData.qualitative.aggression += row.aggression || 0;
   teamData.qualitative.climbhazard += row.climbhazard || 0;
   teamData.qualitative.hoppercapacity += row.hoppercapacity || 0;
   teamData.qualitative.maneuverability += row.maneuverability || 0;
-  teamData.qualitative.durability += row.durability || 0;
   teamData.qualitative.defenseevasion += row.defenseevasion || 0;
   teamData.qualitative.climbspeed += row.climbspeed || 0;
   teamData.qualitative.fuelspeed += row.fuelspeed || 0;
-  teamData.qualitative.passingspeed += row.passingspeed || 0;
+  teamData.qualitative.passingquantity += row.passingquantity || 0;
   teamData.qualitative.autodeclimbspeed += row.autodeclimbspeed || 0;
-  teamData.qualitative.bumpspeed += row.bumpspeed || 0;
 }
 
 // defense column: 0=weak, 1=harassment, 2=game changing. Only count when played defense.
@@ -288,17 +282,14 @@ function calculateAverages(responseObject, rows) {
     const teamRows = rows.filter(row => row.team === parseInt(team) && !row.noshow);
 
     teamData.qualitative = {
-      aggression: avgNonNegative(teamRows.map(r => r.aggression)),
       climbhazard: avgNonNegative(teamRows.map(r => r.climbhazard)),
       hoppercapacity: avgNonNegative(teamRows.map(r => r.hoppercapacity)),
       maneuverability: avgNonNegative(teamRows.map(r => r.maneuverability)),
-      durability: avgNonNegative(teamRows.map(r => r.durability)),
       defenseevasion: avgNonNegative(teamRows.map(r => r.defenseevasion)),
       climbspeed: avgNonNegative(teamRows.map(r => r.climbspeed)),
       fuelspeed: avgNonNegative(teamRows.map(r => r.fuelspeed)),
-      passingspeed: avgNonNegative(teamRows.map(r => r.passingspeed)),
+      passingquantity: avgNonNegative(teamRows.map(r => r.passingquantity)),
       autodeclimbspeed: avgNonNegative(teamRows.map(r => r.autodeclimbspeed)),
-      bumpspeed: avgNonNegative(teamRows.map(r => r.bumpspeed)),
     };
   }
 }
@@ -438,7 +429,7 @@ function calculateLast3Charts(responseObject, rows) {
       : { weak: 0, harassment: 0, gameChanging: 0 };
 
     // Qualitative: average (non-negative) over last3 rows
-    const qualKeys = ['aggression', 'climbhazard', 'hoppercapacity', 'maneuverability', 'durability', 'defenseevasion', 'climbspeed', 'fuelspeed', 'passingspeed', 'autodeclimbspeed', 'bumpspeed'];
+    const qualKeys = ['climbhazard', 'hoppercapacity', 'maneuverability', 'defenseevasion', 'climbspeed', 'fuelspeed', 'passingquantity', 'autodeclimbspeed'];
     const last3Qualitative = {};
     qualKeys.forEach(key => {
       const values = last3Rows.map(r => r[key]).filter(v => typeof v === 'number' && v >= 0);
