@@ -26,7 +26,7 @@ export default function Picklist() {
     const urlParams = new URLSearchParams(window.location.search);
   
     // Weight keys filter
-    const weightKeys = ['epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency'];
+    const weightKeys = ['epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency', 'epaCapacity'];
     const urlWeights = Object.fromEntries(
       Array.from(urlParams).filter(([key]) => weightKeys.includes(key))
     );
@@ -120,6 +120,10 @@ export default function Picklist() {
           <td><input id="auto" type="number" value={weights.auto || 0} name="auto" onChange={handleWeightChange}></input></td>
           <td><label htmlFor="consistency">Cnstcy:</label></td>
           <td><input id="consistency" type="number" value={weights.consistency || 0} name="consistency" onChange={handleWeightChange}></input></td>
+        </tr>
+        <tr>
+          <td><label htmlFor="epaCapacity">EPA Cap:</label></td>
+          <td><input id="epaCapacity" type="number" value={weights.epaCapacity || 0} name="epaCapacity" onChange={handleWeightChange}></input></td>
         </tr>
       </tbody>
     </table>
@@ -360,6 +364,7 @@ const handleAllianceClear = () => {
             <th>Defense</th>
             <th>Auto</th>
             <th>Cnstcy</th>
+            <th>EPA Cap</th>
             <th>Rating</th>
             <th>Comments</th>
           </tr>
@@ -393,6 +398,7 @@ const handleAllianceClear = () => {
                       <td style={{ backgroundColor: valueToColor(teamData.defense) }}>{roundToThree(teamData.defense)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.auto) }}>{roundToThree(teamData.auto)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.consistency) }}>{roundToThree(teamData.consistency)}</td>
+                      <td style={{ backgroundColor: valueToColor(teamData.epaCapacity) }}>{roundToThree(teamData.epaCapacity)}</td>
                       <td>
                         {teamRatings[teamData.team] !== true &&
                           <button onClick={() => handleThumbsUp(teamData.team)}>✅</button>

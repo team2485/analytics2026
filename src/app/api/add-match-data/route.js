@@ -133,7 +133,7 @@ export async function POST(req) {
   if (!_.isNumber(body.shootingmechanism) || (body.shootingmechanism !== 0 && body.shootingmechanism !== 1)) {
     body.shootingmechanism = Number(body.shootingmechanism) === 1 ? 1 : 0;
   }
-  const postmatchBooleans = ['bump', 'trench', 'stuckonfuel', 'playeddefense'];
+  const postmatchBooleans = ['bump', 'trench', 'stuckonfuel', 'stuckonbump', 'playeddefense'];
   for (const key of postmatchBooleans) {
     if (!_.isBoolean(body[key])) body[key] = false;
   }
@@ -146,6 +146,7 @@ export async function POST(req) {
       _.isBoolean(body.bump) &&
       _.isBoolean(body.trench) &&
       _.isBoolean(body.stuckonfuel) &&
+      _.isBoolean(body.stuckonbump) &&
       _.isNumber(body.fuelpercent) &&
       (body.fuelpercent >= 0 && body.fuelpercent <= 100) &&
       _.isBoolean(body.playeddefense)
@@ -195,7 +196,7 @@ if (body.playeddefense) {
       autoclimb, autoclimbposition, autofuel,
       intakeground, intakeoutpost, passingbulldozer, passingshooter, passingdump, shootwhilemove, telefuel,
       defenselocationaz, defenselocationnz,endclimbposition, wideclimb,
-      shootingmechanism, bump, trench, stuckonfuel, playeddefense, defense,
+      shootingmechanism, bump, trench, stuckonfuel, stuckonbump, playeddefense, defense,
       aggression, climbhazard, hoppercapacity, maneuverability, defenseevasion,
       climbspeed, fuelspeed, passingquantity, autodeclimbspeed, bumpspeed,
       generalcomments, breakdowncomments, defensecomments
@@ -206,7 +207,7 @@ if (body.playeddefense) {
       ${body.intakeground}, ${body.intakeoutpost}, ${body.passingbulldozer}, ${body.passingshooter}, ${body.passingdump}, ${body.shootwhilemove}, ${body.telefuel},
       ${body.defenselocationaz}, ${body.defenselocationnz},
       ${body.endclimbposition}, ${body.wideclimb},
-      ${body.shootingmechanism}, ${body.bump}, ${body.trench}, ${body.stuckonfuel}, ${body.fuelpercent}, ${body.playeddefense}, ${body.defense},
+      ${body.shootingmechanism}, ${body.bump}, ${body.trench}, ${body.stuckonfuel}, ${body.stuckonbump}, ${body.fuelpercent}, ${body.playeddefense}, ${body.defense},
       ${body.aggression}, ${body.climbhazard}, ${body.hoppercapacity}, ${body.maneuverability}, ${body.durability}, ${body.defenseevasion},
       ${body.climbspeed}, ${body.fuelspeed}, ${body.passingquantity}, ${body.autodeclimbspeed}, ${body.bumpspeed},
       ${body.generalcomments}, ${body.breakdowncomments || null}, ${body.defensecomments || null}

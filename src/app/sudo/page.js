@@ -169,6 +169,7 @@ export default function Sudo() {
     "bump",
     "trench",
     "stuckonfuel",
+    "stuckonbump",
     "fuelpercent",
     "playeddefense",
     "defense",

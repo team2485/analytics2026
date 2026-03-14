@@ -204,6 +204,9 @@ if (playedDefenseValue && defenseType) {
     data.stuckonfuel = (data["stuckOnFuel"] === true || data.stuckonfuel === true);
     delete data["stuckOnFuel"];
 
+    data.stuckonbump = (data["stuckOnBump"] === true || data.stuckonbump === true);
+    delete data["stuckOnBump"];
+
     data.bump = data.bump === true;
     data.trench = data.trench === true;
 

@@ -24,7 +24,7 @@ export async function GET(request) {
 
   function byAveragingNumbers(index) {
     // Boolean fields - return true if any row has it as true
-    if (['noshow', 'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump', 'shootwhilemove', 'bump', 'trench', 'stuckonfuel', 'playeddefense', 'winauto', 'climbtf', 'wideclimb'].includes(index)) {
+    if (['noshow', 'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump', 'shootwhilemove', 'bump', 'trench', 'stuckonfuel', 'stuckonbump', 'playeddefense', 'winauto', 'climbtf', 'wideclimb'].includes(index)) {
       return arr => arr.some(row => row[index] === true);
     }
     // String/Text fields - join with " - "
@@ -339,6 +339,11 @@ export async function GET(request) {
         stuckOnFuel: arr => {
           const total = arr.length;
           const stuck = arr.filter(row => row.stuckonfuel === true).length;
+          return total > 0 ? (stuck / total) * 100 : 0;
+        },
+        stuckOnBump: arr => {
+          const total = arr.length;
+          const stuck = arr.filter(row => row.stuckonbump === true).length;
           return total > 0 ? (stuck / total) * 100 : 0;
         },
     

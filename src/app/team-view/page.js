@@ -83,6 +83,7 @@ function TeamView() {
        wonTele: api.wonTele ?? [],
        consistency: round10(api.consistency),
        stuckOnFuel: round10(api.stuckOnFuel ?? api.stuckonfuel),
+       stuckOnBump: round10(api.stuckOnBump ?? api.stuckonbump),
        shootingMechanism: api.shootingmechanism ?? api.shootingMechanism ?? "—",
        lastBreakdown: api.lastBreakdown ?? "N/A",
        noShow: round10((() => { const n = Number(api.noShow) ?? 0; return n <= 1 ? n * 100 : n; })()),
@@ -334,6 +335,7 @@ function TeamView() {
                    <div className={styles.leftBoxR1}>
                      <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Consistency"} value={typeof data.consistency === 'number' ? `${Math.round(10 * data.consistency) / 10}%` : data.consistency}/>
                      <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Stuck on Fuel Easily"} value={typeof data.stuckOnFuel === 'number' ? `${Math.round(10 * data.stuckOnFuel) / 10}%` : data.stuckOnFuel}/>
+                     <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Stuck on Bump"} value={typeof data.stuckOnBump === 'number' ? `${Math.round(10 * data.stuckOnBump) / 10}%` : data.stuckOnBump}/>
                      <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Last Breakdown"} value={data.lastBreakdown}/>
                    </div>
                    <div className={styles.leftBoxR2}>
