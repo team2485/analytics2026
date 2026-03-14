@@ -401,9 +401,27 @@ console.log("page",matchType)
 
 
              <FuelCounter internalName={"tele fuel"}/>
-             <Checkbox visibleName={"Shoot while move?"} internalName={"shootwhilemove"}></Checkbox>
+             
              <br></br>
-             <br></br>
+  
+             <SubHeader subHeaderName={"Shooting Mechanism"}></SubHeader>
+                <div className= {styles.shootingBox}>
+                  <TwoOptionRadio
+                    onTwoOptionRadioChange={handleShootingMechanism}
+                    internalName="shootingmechanism"
+                    defaultValue={shootingMechanism}
+                    value1="Static"
+                    value2="Turret"
+                  />
+                <Checkbox visibleName={"Shoot while move?"} internalName={"shootwhilemove"}></Checkbox>
+
+                <SubHeader subHeaderName={"Defense Location"}></SubHeader>
+             <div className={styles.defenseBox}>
+               <Checkbox visibleName={"Alliance Zone"} internalName={"defenselocationaz"}></Checkbox>
+               <Checkbox visibleName={"Neutral Zone"} internalName={"defenselocationnz"}></Checkbox>
+             </div>
+             <FoulCounter internalName={"fouls"}/>
+
              <SubHeader subHeaderName={"Passing?"}></SubHeader>
              <div className={styles.passingBox}>
                <Checkbox visibleName={"Bulldozer"} internalName={"passingbulldozer"}></Checkbox>
@@ -411,12 +429,16 @@ console.log("page",matchType)
                <Checkbox visibleName={"Shooter"} internalName={"passingshooter"}></Checkbox>
              </div>
              <br></br>
-             <SubHeader subHeaderName={"Defense Location"}></SubHeader>
-             <div className={styles.defenseBox}>
-               <Checkbox visibleName={"Alliance Zone"} internalName={"defenselocationaz"}></Checkbox>
-               <Checkbox visibleName={"Neutral Zone"} internalName={"defenselocationnz"}></Checkbox>
-             </div>
-             <FoulCounter internalName={"fouls"}/>
+             <SubHeader subHeaderName={"Terrain Capability"}></SubHeader>
+                <div className={styles.terrainBox}>
+                  <Checkbox visibleName={"Bump"} internalName={"bump"}></Checkbox>
+                  <Checkbox visibleName={"Trench"} internalName={"trench"}></Checkbox>
+                </div>
+              <div className={styles.terrainBox2}>
+                <Checkbox visibleName={"Stuck on Fuel Easily?"} internalName={"stuckOnFuel"} />
+                <Checkbox visibleName={"Stuck on Bump Easily?"} internalName={"stuckOnBump"} />
+              </div>
+              
            </div>
            <div className={styles.PostMatch}>
             <Header headerName={"Endgame"}/>
@@ -435,15 +457,7 @@ console.log("page",matchType)
               <Header headerName={"Post-Match"}/>
               <br></br>
 
-                <SubHeader subHeaderName={"Shooting Mechanism"}></SubHeader>
-                <div className= {styles.shootingBox}>
-                  <TwoOptionRadio
-                    onTwoOptionRadioChange={handleShootingMechanism}
-                    internalName="shootingmechanism"
-                    defaultValue={shootingMechanism}
-                    value1="Static"
-                    value2="Turret"
-                  />
+                
                   {/* <div className={autoClimbStyles.radioGroup}>
                     <label>
                         <input
@@ -464,15 +478,7 @@ console.log("page",matchType)
                 </div>
                 <br></br>
 
-                <SubHeader subHeaderName={"Terrain Capability"}></SubHeader>
-                <div className={styles.terrainBox}>
-                  <Checkbox visibleName={"Bump"} internalName={"bump"}></Checkbox>
-                  <Checkbox visibleName={"Trench"} internalName={"trench"}></Checkbox>
-                </div>
-              <div className={styles.terrainBox2}>
-                <Checkbox visibleName={"Stuck on Fuel Easily?"} internalName={"stuckOnFuel"} />
-                <Checkbox visibleName={"Stuck on Bump Easily?"} internalName={"stuckOnBump"} />
-              </div>
+                
 
                 <div className={styles.Qual}>
                   <Qualitative                   

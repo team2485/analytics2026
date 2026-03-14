@@ -8,6 +8,7 @@ export default function FoulCounter({ visibleName, internalName, pieceType, min,
     max = max || 99999;
 
     const [value, setValue] = useState(0);
+    
     function incrementFive() {
         if (value + 5 <= max) {
             setValue(value + 5);
