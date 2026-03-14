@@ -124,6 +124,7 @@ function initializeTeamData(row, auto, tele, end, frcAPITeamInfo) {
     endgame: createEndgameData(row.endclimbposition),
     // defense: 0=weak, 1=harassment, 2=game changing (only count when played defense)
     defense: countDefenseRow(row),
+    foulsArray: [Number(row.fouls) || 0],
     qualitative: {
       aggression: row.aggression,
       climbhazard: row.climbhazard,
@@ -181,6 +182,8 @@ function accumulateTeamData(teamData, row, auto, tele, end) {
   teamData.defense.weak += dCount.weak;
   teamData.defense.harassment += dCount.harassment;
   teamData.defense.gameChanging += dCount.gameChanging;
+
+  teamData.foulsArray.push(Number(row.fouls) || 0);
 
   // Accumulate qualitative ratings (sum them for averaging later)
   teamData.qualitative.aggression += row.aggression || 0;
@@ -265,6 +268,21 @@ function calculateAverages(responseObject, rows) {
           gameChanging: Math.round((100 * teamData.defense.gameChanging) / defenseSum),
         }
       : { weak: 0, harassment: 0, gameChanging: 0 };
+
+    // Calculate foul stats (mean and median)
+    const fouls = teamData.foulsArray || [];
+    if (fouls.length > 0) {
+      teamData.foulsMean = Math.round((fouls.reduce((a, b) => a + b, 0) / fouls.length) * 10) / 10;
+      const sorted = [...fouls].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      teamData.foulsMedian = sorted.length % 2 === 0
+        ? Math.round(((sorted[mid - 1] + sorted[mid]) / 2) * 10) / 10
+        : sorted[mid];
+    } else {
+      teamData.foulsMean = 0;
+      teamData.foulsMedian = 0;
+    }
+    delete teamData.foulsArray;
 
     // Calculate qualitative ratings (average of non-negative values, -1 for not rated)
     const teamRows = rows.filter(row => row.team === parseInt(team) && !row.noshow);
@@ -359,8 +377,19 @@ function calculateLast3Charts(responseObject, rows) {
       responseObject[team].last3Endgame = { None: 100, L1: 0, L2: 0, L3: 0 };
       responseObject[team].last3Defense = { weak: 0, harassment: 0, gameChanging: 0 };
       responseObject[team].last3Qualitative = null;
+      responseObject[team].last3Fouls = { mean: 0, median: 0 };
       return;
     }
+
+    // Fouls: mean and median over last 3 matches
+    const foulValues = last3Rows.map(r => Number(r.fouls) || 0);
+    const foulsMean = Math.round((foulValues.reduce((a, b) => a + b, 0) / foulValues.length) * 10) / 10;
+    const sortedFouls = [...foulValues].sort((a, b) => a - b);
+    const foulMid = Math.floor(sortedFouls.length / 2);
+    const foulsMedian = sortedFouls.length % 2 === 0
+      ? Math.round(((sortedFouls[foulMid - 1] + sortedFouls[foulMid]) / 2) * 10) / 10
+      : sortedFouls[foulMid];
+    responseObject[team].last3Fouls = { mean: foulsMean, median: foulsMedian };
 
     // Passing: % of rows (matches) where each type was used
     const dump = last3Rows.filter(r => r.passingdump).length;

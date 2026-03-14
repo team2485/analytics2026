@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import EPALineChart from './components/EPALineChart';
 import Endgame from './components/Endgame';
 import Qualitative from './components/Qualitative';
-import PiecePlacement from './components/PiecePlacement';
 import { Chart, registerables } from 'chart.js';
 import Link from "next/link";
 
@@ -308,7 +307,7 @@ function ScoutingApp() {
     data.team6 || defaultTeam
   ].map((teamData, idx) => {
     const c = colorIndex(idx);
-    const useLast3 = teamData.last3EPA != null || teamData.last3Passing != null;
+    const useLast3 = teamData.last3EPA != null || teamData.last3Fouls != null;
     return {
     number: teamData.team,
     name: teamData.teamName,
@@ -320,13 +319,7 @@ function ScoutingApp() {
     autoEPA: Math.round(teamData.last3Auto ?? teamData.displayAuto ?? 0),
     teleEPA: Math.round(teamData.last3Tele ?? teamData.displayTele ?? 0),
     endgameEPA: Math.round(teamData.last3End ?? teamData.displayEnd ?? 0),
-    passingFreq: useLast3 && teamData.last3Passing
-      ? { dump: teamData.last3Passing.dump, bulldozer: teamData.last3Passing.bulldozer, shooter: teamData.last3Passing.shooter }
-      : {
-          dump: teamData.passing?.dump ?? teamData.passingDump ?? teamData.dump ?? 0,
-          bulldozer: teamData.passing?.bulldozer ?? teamData.passingBulldozer ?? teamData.bulldozer ?? 0,
-          shooter: teamData.passing?.shooter ?? teamData.passingShooter ?? teamData.shooter ?? 0
-        },
+    fouls: { mean: teamData.foulsMean ?? 0, median: teamData.foulsMedian ?? 0 },
     // Defense Quality from DB "defense" column: 0=weak, 1=harassment, 2=game changing
     defenseQuality: (useLast3 && teamData.last3Defense)
       ? { weak: teamData.last3Defense.weak, harassment: teamData.last3Defense.harassment, gameChanging: teamData.last3Defense.gameChanging }
@@ -599,13 +592,16 @@ function TeamCard({ team }) {
       </div>
       <div className={styles.chartsRow}>
         <div className={styles.chartColumn}>
-          <h3>Passing Rel. Frequency</h3>
-          <div className={styles.chartWrapper}>
-            <PiecePlacement 
-              colors={[team.color, team.color, team.darkColor]}
-              matchMax={100}
-              passingData={team.passingFreq}
-            />
+          <h3>Fouls</h3>
+          <div className={styles.foulBox} style={{ borderColor: team.darkColor, backgroundColor: team.lightColor }}>
+            <div className={styles.foulStat}>
+              <span className={styles.foulLabel}>Mean</span>
+              <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.mean}</span>
+            </div>
+            <div className={styles.foulStat}>
+              <span className={styles.foulLabel}>Median</span>
+              <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.median}</span>
+            </div>
           </div>
         </div>
         <div className={styles.chartColumn}>

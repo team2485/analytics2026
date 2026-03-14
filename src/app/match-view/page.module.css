@@ -480,6 +480,38 @@
     position: relative;
 }
 
+.foulBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 200px;
+    border: 3px solid;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.foulStat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.foulLabel {
+    font-family: 'Teko', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+.foulValue {
+    font-family: 'Teko', sans-serif;
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 1;
+}
+
 /* Endgame Section */
 .endgameSection {
     margin-top: 20px;
