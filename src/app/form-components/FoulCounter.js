@@ -66,7 +66,7 @@ export default function FoulCounter({ visibleName, internalName, pieceType, min,
                     <button type="button" 
                     className={styles.IncButton} 
                     onClick={incrementFive} 
-                    internalName={"fouled"} ><h1><strong>+5</strong></h1></button>
+                     ><h1><strong>+5</strong></h1></button>
                 </div>
                 </div>
                 

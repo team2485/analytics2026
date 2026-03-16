@@ -55,13 +55,11 @@ CREATE TABLE eventCompetitionYear (
    ClimbHazard INT DEFAULT -1,
    HopperCapacity INT DEFAULT -1,
    Maneuverability INT DEFAULT -1,
-   Durability INT DEFAULT -1,
    DefenseEvasion INT DEFAULT -1,
    ClimbSpeed INT DEFAULT -1,
    FuelSpeed INT DEFAULT -1,
    PassingQuantity INT DEFAULT -1,
    AutoDeclimbSpeed INT DEFAULT -1,
-   BumpSpeed INT DEFAULT -1,
    
    -- Comments
    GeneralComments TEXT,
@@ -79,7 +77,7 @@ INSERT INTO eventCompetitionYear (
    EndClimbPosition, WideClimb,
    ShootingMechanism, Bump, Trench, StuckOnFuel, PlayedDefense, Defense,
    Aggression, ClimbHazard, HopperCapacity, Maneuverability, DefenseEvasion,
-   ClimbSpeed, FuelSpeed, PassingQuantity, AutoDeclimbSpeed, BumpSpeed,
+   ClimbSpeed, FuelSpeed, PassingQuantity, AutoDeclimbSpeed,
    GeneralComments, BreakdownComments, DefenseComments, FoulComments
 )
 VALUES (
@@ -90,7 +88,7 @@ VALUES (
    2, FALSE,
    1, FALSE, TRUE, FALSE, 75, TRUE, 1,
    4, 2, 5, 4, 5, 3,
-   4, 5, 3, 2, 3,
+   4, 5, 3, 3,
    'Performed well overall with strong fuel scoring.', 'did not break down', 'Played effective defense at outpost', NULL
 );
 

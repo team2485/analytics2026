@@ -149,8 +149,6 @@ export async function POST(req) {
       _.isBoolean(body.trench) &&
       _.isBoolean(body.stuckonfuel) &&
       _.isBoolean(body.stuckonbump) &&
-      _.isNumber(body.fuelpercent) &&
-      (body.fuelpercent >= 0 && body.fuelpercent <= 100) &&
       _.isBoolean(body.playeddefense) &&
       _.isNumber(body.fouls) && body.fouls >= 0
     )
@@ -201,9 +199,9 @@ if (body.playeddefense) {
       autoclimb, autoclimbposition, autofuel,
       intakeground, intakeoutpost, passingbulldozer, passingshooter, passingdump, shootwhilemove, telefuel,
       defenselocationaz, defenselocationnz,endclimbposition, wideclimb,
-      shootingmechanism, bump, trench, stuckonfuel, stuckonbump, fouls, playeddefense, defense,
-      aggression, climbhazard, hoppercapacity, maneuverability, defenseevasion,
-      climbspeed, fuelspeed, passingquantity, autodeclimbspeed, bumpspeed,
+      shootingmechanism, bump, trench, stuckonfuel, stuckonbump, fouls, playeddefense, defense, 
+      climbhazard, hoppercapacity, maneuverability, defenseevasion,
+      climbspeed, fuelspeed, passingquantity, autodeclimbspeed,
       generalcomments, breakdowncomments, defensecomments, foulcomments
     )
     VALUES (
@@ -212,9 +210,9 @@ if (body.playeddefense) {
       ${body.intakeground}, ${body.intakeoutpost}, ${body.passingbulldozer}, ${body.passingshooter}, ${body.passingdump}, ${body.shootwhilemove}, ${body.telefuel},
       ${body.defenselocationaz}, ${body.defenselocationnz},
       ${body.endclimbposition}, ${body.wideclimb},
-      ${body.shootingmechanism}, ${body.bump}, ${body.trench}, ${body.stuckonfuel}, ${body.stuckonbump}, ${body.fouls}, ${body.fuelpercent}, ${body.playeddefense}, ${body.defense},
-      ${body.aggression}, ${body.climbhazard}, ${body.hoppercapacity}, ${body.maneuverability}, ${body.durability}, ${body.defenseevasion},
-      ${body.climbspeed}, ${body.fuelspeed}, ${body.passingquantity}, ${body.autodeclimbspeed}, ${body.bumpspeed},
+      ${body.shootingmechanism}, ${body.bump}, ${body.trench}, ${body.stuckonfuel}, ${body.stuckonbump}, ${body.fouls}, ${body.playeddefense}, ${body.defense},
+      ${body.climbhazard}, ${body.hoppercapacity}, ${body.maneuverability}, ${body.defenseevasion},
+      ${body.climbspeed}, ${body.fuelspeed}, ${body.passingquantity}, ${body.autodeclimbspeed},
       ${body.generalcomments}, ${body.breakdowncomments || null}, ${body.defensecomments || null}, ${body.foulcomments || null}
     )
   `;
