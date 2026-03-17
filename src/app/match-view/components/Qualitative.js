@@ -71,15 +71,12 @@ export default function Qualitative({ radarData, teamIndices, colors, teamNumber
     const labelMap = {
       fuelspeed: 'Fuel Speed',
       maneuverability: 'Maneuverability',
-      durability: 'Durability',
-      collectioncapacity: 'Collection Capacity',
-      passingspeed: 'Passing Speed',
+      hoppercapacity: 'Hopper Capacity',
+      passingquantity: 'Passing Quantity',
       climbingspeed: 'Climbing Speed',
-      autodeclimbspeed: 'Auto Climb Speed',
-      bumpspeed: 'Bump Speed',
+      autodeclimbspeed: 'Auto De-Climb Speed',
       defenseevasion: 'Defense Evasion',
-      aggression: 'Aggression',
-      climbhazard: 'Climb Hazard'
+      climbhazard: 'Climb Hazard*'
     };
     return labelMap[label] || label;
   };

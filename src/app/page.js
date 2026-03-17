@@ -17,6 +17,7 @@ import ClimbCheckbox from "./form-components/ClimbCheckbox";
 import DefenseBreakdown from "./form-components/DefenseBreakdown";
 import ThreeOptionRadio from "./form-components/ThreeOptionRadio";
 import TwoOptionRadio from "./form-components/TwoOptionRadio";
+import FoulCounter from "./form-components/FoulCounter";
 
 export default function Home() {
   const [noShow, setNoShow] = useState(false);
@@ -91,7 +92,7 @@ export default function Home() {
     submitButton.disabled = true;
     //import values from form to data variable
 
-    let data = { noshow: false, breakdowncomments: null, defensecomments: null, generalcomments: null };
+    let data = { noshow: false, breakdowncomments: null, defensecomments: null, generalcomments: null, foulcomments: null };
     [...new FormData(form.current).entries()].forEach(([name, value]) => {
       if (value == 'on') {
         data[name] = true;
@@ -126,7 +127,7 @@ export default function Home() {
       data.endclimbposition = parseInt(data.endClimbPosition);
       delete data.endClimbPosition;
     } else {
-      data.endclimbposition = null;
+      data.endclimbposition = 9; // Default to None
       delete data.endClimbPosition;
     }
 
@@ -151,12 +152,6 @@ export default function Home() {
     //   data.shootingmechanism = 0;
     // }
     // delete data.staticShooting;
-    
-
-    data.fuelpercent = (data.percentfuel != null && data.percentfuel !== "")
-      ? (parseInt(String(data.percentfuel).replace('%', '').trim(), 10) || 0)
-      : 0;
-    delete data.percentfuel;
     
 // After setting playeddefense
 const playedDefenseValue = data.defense === true;
@@ -197,8 +192,6 @@ if (playedDefenseValue && defenseType) {
     
     // Field name fixes: normalize to lowercase with no spaces
     // "win auto" -> "winauto" (unchecked = not in FormData, so default false)
-    data.winauto = data["win auto"] === true;
-    delete data["win auto"];
 
     data.autofuel = data["auto fuel"] != null && data["auto fuel"] !== "" ? Number(data["auto fuel"]) : 0;
     delete data["auto fuel"];
@@ -212,15 +205,19 @@ if (playedDefenseValue && defenseType) {
     data.stuckonfuel = (data["stuckOnFuel"] === true || data.stuckonfuel === true);
     delete data["stuckOnFuel"];
 
+    data.stuckonbump = (data["stuckOnBump"] === true || data.stuckonbump === true);
+    delete data["stuckOnBump"];
+
     data.bump = data.bump === true;
     data.trench = data.trench === true;
+    data.fouls = Number(data.fouls) || 0;
+    data.foulcomments = data.foulcomments != null && data.foulcomments !== undefined ? String(data.foulcomments).trim() : "";
 
     data.breakdown = undefined;
 
-    //check pre-match data (skip percentfuel — 0% is valid)
+    //check pre-match data
     let preMatchInputs = document.querySelectorAll(".preMatchInput"); //todo: use the data object
     for (let preMatchInput of preMatchInputs) {
-      if (preMatchInput.name === "percentfuel") continue; // allow 0 for percent fuel
       if (preMatchInput.value == "" || preMatchInput.value <= "0") {
         alert("Invalid Pre-Match Data!");
         submitButton.disabled = false;
@@ -380,9 +377,7 @@ console.log("page",matchType)
                   value3="Right"
                 />
                 )}
-              
-          </div>
-              <Checkbox visibleName={"Win Auto?"} internalName={"win auto"}/>
+               </div>
             </div>
               
               <br></br>
@@ -406,9 +401,27 @@ console.log("page",matchType)
 
 
              <FuelCounter internalName={"tele fuel"}/>
-             <Checkbox visibleName={"Shoot while move?"} internalName={"shootwhilemove"}></Checkbox>
+             
              <br></br>
-             <br></br>
+  
+             <SubHeader subHeaderName={"Shooting Mechanism"}></SubHeader>
+                <div className= {styles.shootingBox}>
+                  <TwoOptionRadio
+                    onTwoOptionRadioChange={handleShootingMechanism}
+                    internalName="shootingmechanism"
+                    defaultValue={shootingMechanism}
+                    value1="Static"
+                    value2="Turret"
+                  />
+                <Checkbox visibleName={"Shoot while move?"} internalName={"shootwhilemove"}></Checkbox>
+
+                <SubHeader subHeaderName={"Defense Location"}></SubHeader>
+             <div className={styles.defenseBox}>
+               <Checkbox visibleName={"Alliance Zone"} internalName={"defenselocationaz"}></Checkbox>
+               <Checkbox visibleName={"Neutral Zone"} internalName={"defenselocationnz"}></Checkbox>
+             </div>
+             <FoulCounter internalName={"fouls"}/>
+
              <SubHeader subHeaderName={"Passing?"}></SubHeader>
              <div className={styles.passingBox}>
                <Checkbox visibleName={"Bulldozer"} internalName={"passingbulldozer"}></Checkbox>
@@ -416,16 +429,16 @@ console.log("page",matchType)
                <Checkbox visibleName={"Shooter"} internalName={"passingshooter"}></Checkbox>
              </div>
              <br></br>
-             <SubHeader subHeaderName={"Defense Location"}></SubHeader>
-             <div className={styles.defenseBox}>
-               <Checkbox visibleName={"Alliance Zone (AZ)"} internalName={"defenselocationaz"}></Checkbox>
-               <Checkbox visibleName={"Neutral Zone"} internalName={"defenselocationnz"}></Checkbox>
-               <Checkbox visibleName={"Bump"} internalName={"defenselocationbump"}></Checkbox>
-               <Checkbox visibleName={"Trench"} internalName={"defenselocationtrench"}></Checkbox>
-               <Checkbox visibleName={"Tower"} internalName={"defenselocationtower"}></Checkbox>
-               <Checkbox visibleName={"Hub"} internalName={"defenselocationhub"}></Checkbox>
-               <Checkbox visibleName={"Outpost"} internalName={"defenselocationoutpost"}></Checkbox>
-             </div>
+             <SubHeader subHeaderName={"Terrain Capability"}></SubHeader>
+                <div className={styles.terrainBox}>
+                  <Checkbox visibleName={"Bump"} internalName={"bump"}></Checkbox>
+                  <Checkbox visibleName={"Trench"} internalName={"trench"}></Checkbox>
+                </div>
+              <div className={styles.terrainBox2}>
+                <Checkbox visibleName={"Stuck on Fuel Easily?"} internalName={"stuckOnFuel"} />
+                <Checkbox visibleName={"Stuck on Bump Easily?"} internalName={"stuckOnBump"} />
+              </div>
+              
            </div>
            <div className={styles.PostMatch}>
             <Header headerName={"Endgame"}/>
@@ -443,26 +456,8 @@ console.log("page",matchType)
             <div className={styles.PostMatch}>       
               <Header headerName={"Post-Match"}/>
               <br></br>
-                <div className={styles.percentFuel}>
-                  <TextInput 
-                    visibleName={"% of Alliance Fuel Scored by Robot:"} 
-                    internalName={"percentfuel"} 
-                    defaultValue={""}
-                    type={"text"}
-                  />
-                </div>
 
-                <br></br>
-
-                <SubHeader subHeaderName={"Shooting Mechanism"}></SubHeader>
-                <div className= {styles.shootingBox}>
-                  <TwoOptionRadio
-                    onTwoOptionRadioChange={handleShootingMechanism}
-                    internalName="shootingmechanism"
-                    defaultValue={shootingMechanism}
-                    value1="Static"
-                    value2="Turret"
-                  />
+                
                   {/* <div className={autoClimbStyles.radioGroup}>
                     <label>
                         <input
@@ -483,14 +478,8 @@ console.log("page",matchType)
                 </div>
                 <br></br>
 
-                <SubHeader subHeaderName={"Terrain Capability"}></SubHeader>
-                <div className={styles.terrainBox}>
-                  <Checkbox visibleName={"Bump"} internalName={"bump"}></Checkbox>
-                  <Checkbox visibleName={"Trench"} internalName={"trench"}></Checkbox>
-                </div>
+                
 
-                <Checkbox visibleName={"Stuck on Fuel Easily?"} internalName={"stuckOnFuel"} />
-              
                 <div className={styles.Qual}>
                   <Qualitative                   
                     visibleName={"Hopper Capacity"}
@@ -501,17 +490,13 @@ console.log("page",matchType)
                     internalName={"maneuverability"}
                     description={"Maneuverability"}/>
                   <Qualitative                   
-                    visibleName={"Durability"}
-                    internalName={"durability"}
-                    description={"Durability"}/>
-                  <Qualitative                   
                     visibleName={"Fuel Speed"}
                     internalName={"fuelspeed"}
                     description={"Fuel Speed"}/>
                   <Qualitative                   
-                    visibleName={"Passing Speed"}
-                    internalName={"passingspeed"}
-                    description={"Passing Speed"}/>
+                    visibleName={"Passing Quantity"}
+                    internalName={"passingquantity"}
+                    description={"Passing Quantity"}/>
                   <Qualitative                   
                     visibleName={"Climb Speed"}
                     internalName={"climbspeed"}
@@ -521,18 +506,9 @@ console.log("page",matchType)
                     internalName={"autodeclimbspeed"}
                     description={"Auto Declimb Speed"}/>
                   <Qualitative                   
-                    visibleName={"Bump Speed"}
-                    internalName={"bumpspeed"}
-                    description={"Bump Speed"}/>
-                  <Qualitative                   
                     visibleName={"Defense Evasion"}
                     internalName={"defenseevasion"}
                     description={"Defense Evasion Ability"}/>
-                  <Qualitative
-                    visibleName={"Aggression"}
-                    internalName={"aggression"}
-                    description={"Aggression"}
-                    symbol={"ⵔ"}/>
                   <Qualitative
                     visibleName={"Climb Hazard"}
                     internalName={"climbhazard"}

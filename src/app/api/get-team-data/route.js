@@ -15,7 +15,7 @@ export async function GET(request) {
   }
 
   // Fetch team data from database
-  let data = await sql`SELECT * FROM phd2026 WHERE team = ${team};`;
+  let data = await sql`SELECT * FROM sdd2026 WHERE team = ${team};`;
   const rows = data.rows;
 
   if (rows.length === 0) {
@@ -24,11 +24,11 @@ export async function GET(request) {
 
   function byAveragingNumbers(index) {
     // Boolean fields - return true if any row has it as true
-    if (['noshow', 'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump', 'shootwhilemove', 'bump', 'trench', 'stuckonfuel', 'playeddefense', 'winauto', 'climbtf', 'wideclimb'].includes(index)) {
+    if (['noshow', 'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump', 'shootwhilemove', 'bump', 'trench', 'stuckonfuel', 'stuckonbump', 'playeddefense', 'winauto', 'climbtf', 'wideclimb'].includes(index)) {
       return arr => arr.some(row => row[index] === true);
     }
     // String/Text fields - join with " - "
-    if (['scoutname', 'generalcomments', 'breakdowncomments', 'defensecomments'].includes(index)) {
+    if (['scoutname', 'generalcomments', 'breakdowncomments', 'defensecomments', 'foulcomments'].includes(index)) {
       return arr => arr.map(row => row[index]).filter(a => a != null).join(" - ") || null;
     }
     // Integer enum fields - format and join with " - "
@@ -59,7 +59,7 @@ export async function GET(request) {
       };
     }
     // Qualitative ratings (0-5 scale, -1 for not rated)
-    if (['aggression', 'climbhazard', 'hoppercapacity', 'maneuverability', 'durability', 'defenseevasion', 'climbspeed', 'fuelspeed', 'passingspeed', 'autodeclimbspeed', 'bumpspeed'].includes(index)) {
+    if (['climbhazard', 'hoppercapacity', 'maneuverability', 'defenseevasion', 'climbspeed', 'fuelspeed', 'passingquantity', 'autodeclimbspeed'].includes(index)) {
       return arr => {
         let filtered = arr.filter(row => row[index] != -1 && row[index] != null).map(row => row[index]);
         return filtered.length === 0 ? -1 : mean(filtered);
@@ -85,27 +85,38 @@ export async function GET(request) {
     return arr.filter(e => e[index] === value).length / arr.length;
   }
 
-  // fetch team name from blue alliance api, commented our for now while testing getting from the backend
-  const teamName = await fetch(`https://www.thebluealliance.com/api/v3/team/frc${team}/simple`, {
-    headers: {
-      "X-TBA-Auth-Key": process.env.TBA_AUTH_KEY,
-      "Accept": "application/json"
-    },
-  })
-  .then(resp => {
-    if (resp.status !== 200) {
-      console.error(`TBA API Error: Received status ${resp.status}`);
-      return null;  // Return null if the request fails
+  const tbaHeaders = { 'X-TBA-Auth-Key': process.env.TBA_AUTH_KEY, 'Accept': 'application/json' };
+
+  const [teamName, tbaMatchData] = await Promise.all([
+    fetch(`https://www.thebluealliance.com/api/v3/team/frc${team}/simple`, { headers: tbaHeaders })
+      .then(resp => resp.status === 200 ? resp.json() : null)
+      .then(data => data?.nickname ?? "")
+      .catch(() => ""),
+    fetch('https://www.thebluealliance.com/api/v3/event/2026casnd/matches', { headers: tbaHeaders })
+      .then(r => r.ok ? r.json() : [])
+      .catch(() => []),
+  ]);
+
+  const winAutoMap = {};
+  for (const match of tbaMatchData) {
+    if (match.comp_level !== 'qm' || !match.score_breakdown) continue;
+    const redAuto = match.score_breakdown.red?.totalAutoPoints ?? 0;
+    const blueAuto = match.score_breakdown.blue?.totalAutoPoints ?? 0;
+    for (const tk of (match.alliances?.red?.team_keys ?? [])) {
+      const t = parseInt(tk.replace('frc', ''), 10);
+      if (!winAutoMap[t]) winAutoMap[t] = {};
+      winAutoMap[t][match.match_number] = redAuto > blueAuto;
     }
-    return resp.json();
-  })
-  .then(data => {
-    if (!data || !data.nickname) { 
-      console.warn(`TBA API Warning: No nickname found for team ${team}`);
-      return "";  // Provide a default fallback
+    for (const tk of (match.alliances?.blue?.team_keys ?? [])) {
+      const t = parseInt(tk.replace('frc', ''), 10);
+      if (!winAutoMap[t]) winAutoMap[t] = {};
+      winAutoMap[t][match.match_number] = blueAuto > redAuto;
     }
-    return data.nickname;
-  });
+  }
+
+  for (const row of rows) {
+    row.winauto = winAutoMap[row.team]?.[row.match] ?? row.winauto;
+  }
     const matchesScouted = new Set(teamTable.map(row => row.match)).size;
 
     function standardDeviation(arr, key) {
@@ -311,9 +322,9 @@ export async function GET(request) {
           if (latest3Matches.length === 0) return 0;
           return latest3Matches.reduce((sum, m) => sum + m.avgEnd, 0) / latest3Matches.length;
         },
-        
+        //Add TBA to pull win/lose auto
         // Extract match and performance metrics (include winauto for win/loss dots on all over-time charts)
-        epaOverTime: arr => tidy(arr, select(['epa', 'match', 'winauto'])),
+        epaOverTime: arr => tidy(arr, select(['epa', 'match', 'winauto', 'fouls'])),
         autoOverTime: arr => tidy(arr, select(['match', 'auto', 'winauto'])),
         teleOverTime: arr => tidy(arr, select(['match', 'tele', 'winauto'])),
       
@@ -339,6 +350,11 @@ export async function GET(request) {
         stuckOnFuel: arr => {
           const total = arr.length;
           const stuck = arr.filter(row => row.stuckonfuel === true).length;
+          return total > 0 ? (stuck / total) * 100 : 0;
+        },
+        stuckOnBump: arr => {
+          const total = arr.length;
+          const stuck = arr.filter(row => row.stuckonbump === true).length;
           return total > 0 ? (stuck / total) * 100 : 0;
         },
     
@@ -413,7 +429,25 @@ export async function GET(request) {
           
           return result.length > 0 ? result : [];
         },
-      
+
+        foulComments: arr => {
+          const commentsByMatch = {};
+          arr.forEach(row => {
+            if (row.foulcomments && row.foulcomments.trim()) {
+              if (!commentsByMatch[row.match]) {
+                commentsByMatch[row.match] = [];
+              }
+              commentsByMatch[row.match].push(row.foulcomments);
+            }
+          });
+
+          const result = Object.entries(commentsByMatch).map(([match, comments]) =>
+            ` *Match ${match}: ${comments.join(' -- ')}*`
+          );
+
+          return result.length > 0 ? result : [];
+        },
+
     // Defense comments removed - not in 2026 schema
     // Defense information is now in Defense field (weak/harassment/game changing) and PlayedDefense boolean
     autoOverTime: arr => tidy(arr, select(['match', 'auto', 'winauto'])),
@@ -747,17 +781,14 @@ export async function GET(request) {
     }
   
     return [
-      { name: "Aggression*", rating: safeAverage('aggression', true) },
       { name: "Climb Hazard*", rating: safeAverage('climbhazard', true) },
       { name: "Hopper Capacity", rating: safeAverage('hoppercapacity') },
       { name: "Maneuverability", rating: safeAverage('maneuverability') },
-      { name: "Durability", rating: safeAverage('durability') },
       { name: "Defense Evasion", rating: safeAverage('defenseevasion') },
       { name: "Climb Speed", rating: safeAverage('climbspeed') },
       { name: "Fuel Speed", rating: safeAverage('fuelspeed') },
-      { name: "Passing Speed", rating: safeAverage('passingspeed') },
+      { name: "Passing Quantity", rating: safeAverage('passingquantity') },
       { name: "Auto Declimb Speed", rating: safeAverage('autodeclimbspeed') },
-      { name: "Bump Speed", rating: safeAverage('bumpspeed') },
     ];
   }
   
@@ -820,6 +851,10 @@ function aggregateByMatch(dataArray) {
           if (withVal.length === 0) return undefined;
           const wins = withVal.filter(d => d.winauto === true || d.winauto === 1).length;
           return wins >= withVal.length / 2;
+        },
+        fouls: (items) => {
+          const valid = items.map(d => Number(d.fouls)).filter(v => Number.isFinite(v));
+          return valid.length ? Math.round((valid.reduce((a, b) => a + b, 0) / valid.length) * 10) / 10 : undefined;
         },
       }),
     ]),

@@ -9,13 +9,13 @@ export async function POST(request) {
 
   const requestBody = await request.json(); 
 
-  let data = await sql`SELECT * FROM phd2026;`;
+  let data = await sql`SELECT * FROM sdd2026;`;
 
   let rows = data.rows;
 
   function averageField(index) {
     // Boolean fields - return true if any row has it as true
-    if (['noshow', 'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump', 'shootwhilemove', 'bump', 'trench', 'stuckonfuel', 'playeddefense', 'winauto', 'climbtf', 'wideclimb'].includes(index)) {
+    if (['noshow', 'intakeground', 'intakeoutpost', 'passingbulldozer', 'passingshooter', 'passingdump', 'shootwhilemove', 'bump', 'trench', 'stuckonfuel', 'stuckonbump', 'playeddefense', 'winauto', 'climbtf', 'wideclimb'].includes(index)) {
       return arr => arr.some(row => row[index] === true);
     }
     // String/Text fields - join with comma
@@ -92,6 +92,21 @@ export async function POST(request) {
     last3EPAMap[team] = (typeof avgOfLast3 === 'number' && !isNaN(avgOfLast3)) ? avgOfLast3 : 0;
   }
 
+  const trimmedepaMap = {};
+  for (const team in matchGroupedByTeam) {
+    const epaValues = Object.values(matchGroupedByTeam[team])
+      .map(matchRows => matchRows.reduce((sum, row) => sum + calcEPA(row), 0) / matchRows.length);
+    if (epaValues.length >= 3) {
+      epaValues.sort((a, b) => a - b);
+      const trimmed = epaValues.slice(1, -1);
+      trimmedepaMap[team] = trimmed.reduce((a, b) => a + b, 0) / trimmed.length;
+    } else {
+      trimmedepaMap[team] = epaValues.length > 0
+        ? epaValues.reduce((a, b) => a + b, 0) / epaValues.length
+        : 0;
+    }
+  }
+
   const teamFuelMap = {};
   rows.forEach((row) => {
     const team = row.team;
@@ -146,6 +161,21 @@ export async function POST(request) {
     teamPassingPct[team] = t.total > 0 ? (t.withPassing / t.total) * 100 : 0;
   });
 
+  const teamFoulsMap = {};
+  rows.forEach(row => {
+    const team = row.team;
+    if (!teamFoulsMap[team]) teamFoulsMap[team] = { sum: 0, count: 0 };
+    teamFoulsMap[team].sum += (Number(row.fouls) || 0);
+    teamFoulsMap[team].count += 1;
+  });
+  const teamFoulsAvg = {};
+  let maxFoulsAvg = 0;
+  for (const team in teamFoulsMap) {
+    const t = teamFoulsMap[team];
+    teamFoulsAvg[team] = t.count > 0 ? t.sum / t.count : 0;
+    if (teamFoulsAvg[team] > maxFoulsAvg) maxFoulsAvg = teamFoulsAvg[team];
+  }
+
   teamTable = tidy(teamTable, mutate({
     auto: d => calcAuto(d),
     epa: d => calcEPA(d),
@@ -156,20 +186,24 @@ export async function POST(request) {
     defense: d => {
       const played = d.defenseplayed ?? d.playeddefense;
       if (played === false || played === null || played === undefined) return 0;
-      if (typeof played === 'number' && played > 0) return played * 10;
       let score = 0;
-      const type = d.defense;
-      if (type === 0 || (typeof type === 'string' && String(type).toLowerCase() === 'weak')) score += 1;
-      else if (type === 1 || (typeof type === 'string' && String(type).toLowerCase() === 'harassment')) score += 5;
-      else if (type === 2 || (typeof type === 'string' && String(type).toLowerCase() === 'game changing')) score += 10;
-      return score;
+      if (typeof played === 'number' && played > 0) { score = played * 10; }
+      else {
+        const type = d.defense;
+        if (type === 0 || (typeof type === 'string' && String(type).toLowerCase() === 'weak')) score += 1;
+        else if (type === 1 || (typeof type === 'string' && String(type).toLowerCase() === 'harassment')) score += 5;
+        else if (type === 2 || (typeof type === 'string' && String(type).toLowerCase() === 'game changing')) score += 10;
+      }
+      const foulRate = maxFoulsAvg > 0 ? (teamFoulsAvg[d.team] ?? 0) / maxFoulsAvg : 0;
+      return score * (1 - foulRate);
     },
     consistency: d => teamConsistencyMap[d.team] ?? 0,
-  }), select(['team', 'epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency']));
+    trimmedepa: d => trimmedepaMap[d.team] ?? 0,
+  }), select(['team', 'epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency', 'trimmedepa']));
 
   const getTBARankings = async () => {
     try {
-      const response = await fetch(`https://www.thebluealliance.com/api/v3/event/2026capoh/rankings`, {
+      const response = await fetch(`https://www.thebluealliance.com/api/v3/event/2026casnd/rankings`, {
         headers: {
           'X-TBA-Auth-Key': process.env.TBA_AUTH_KEY,
           'Accept': 'application/json'
@@ -204,6 +238,7 @@ export async function POST(request) {
     defense: d => (maxes.defense && Number(maxes.defense)) ? d.defense / maxes.defense : 0,
     auto: d => (maxes.auto && Number(maxes.auto)) ? d.auto / maxes.auto : 0,
     consistency: d => (maxes.consistency && Number(maxes.consistency)) ? d.consistency / maxes.consistency : 0,
+    trimmedepa: d => (maxes.trimmedepa && Number(maxes.trimmedepa)) ? d.trimmedepa / maxes.trimmedepa : 0,
     score: d => requestBody.reduce((sum, [key, weight]) => {
       const value = d[key] ?? 0;
       const num = Number(value);

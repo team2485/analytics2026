@@ -83,6 +83,7 @@ function TeamView() {
        wonTele: api.wonTele ?? [],
        consistency: round10(api.consistency),
        stuckOnFuel: round10(api.stuckOnFuel ?? api.stuckonfuel),
+       stuckOnBump: round10(api.stuckOnBump ?? api.stuckonbump),
        shootingMechanism: api.shootingmechanism ?? api.shootingMechanism ?? "—",
        lastBreakdown: api.lastBreakdown ?? "N/A",
        noShow: round10((() => { const n = Number(api.noShow) ?? 0; return n <= 1 ? n * 100 : n; })()),
@@ -100,6 +101,7 @@ function TeamView() {
        generalComments: Array.isArray(api.generalComments) ? api.generalComments : [],
        breakdownComments: Array.isArray(api.breakdownComments) ? api.breakdownComments : [],
        defenseComments: Array.isArray(api.defenseComments) ? api.defenseComments : [],
+       foulComments: Array.isArray(api.foulComments) ? api.foulComments : [],
        autoclimb: {
          success: round10(api.auto?.climb?.successRate),
          fail: round10(api.auto?.climb?.failRate),
@@ -141,6 +143,8 @@ function TeamView() {
        bumpTrav: Boolean(api.bump),
        trenchTrav: Boolean(api.trench),
        wideClimb: Boolean(api.wideClimb ?? api.wideclimb),
+       meanFouls: 0,
+       medianFouls: 0,
      };
    }
 
@@ -334,6 +338,7 @@ function TeamView() {
                    <div className={styles.leftBoxR1}>
                      <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Consistency"} value={typeof data.consistency === 'number' ? `${Math.round(10 * data.consistency) / 10}%` : data.consistency}/>
                      <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Stuck on Fuel Easily"} value={typeof data.stuckOnFuel === 'number' ? `${Math.round(10 * data.stuckOnFuel) / 10}%` : data.stuckOnFuel}/>
+                     <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Stuck on Bump"} value={typeof data.stuckOnBump === 'number' ? `${Math.round(10 * data.stuckOnBump) / 10}%` : data.stuckOnBump}/>
                      <VBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Last Breakdown"} value={data.lastBreakdown}/>
                    </div>
                    <div className={styles.leftBoxR2}>
@@ -377,6 +382,7 @@ function TeamView() {
                    <Comments color1={Colors[0][1]} color2={Colors[0][0]} title={"General Comments"} value={data.generalComments} />
                    <Comments color1={Colors[0][1]} color2={Colors[0][0]} title={"Breakdown Comments"} value={data.breakdownComments} />
                    <Comments color1={Colors[0][1]} color2={Colors[0][0]} title={"Defense Comments"} value={data.defenseComments} />
+                   <Comments color1={Colors[0][1]} color2={Colors[0][0]} title={"Foul Elaboration"} value={data.foulComments} />
                  </div>
                  <HBox color1={Colors[0][1]} color2={Colors[0][0]} title={"Scouts"} value={data.scouts} />
                </div>
@@ -431,9 +437,10 @@ function TeamView() {
              <div className={styles.rightColumnBoxesTwo}>
 
           <div className={styles.desktopTables}>
-          <div className={styles.hBox}>
+          
+          <div className={styles.hBox1}>
             <VBox color1={Colors[2][2]} color2={Colors[2][0]} color3={Colors[2][2]} title={"Median Fuel"} value={Math.round(10*data.teleMedianFuel)/10} />
-            <div className={styles.hBox1}>
+    
             <table className={styles.horizontalTable}> 
                 <tbody>
                   <tr>
@@ -449,46 +456,62 @@ function TeamView() {
                   </tr>
                 </tbody>
               </table>
-            <table className={styles.horizontalTable1}> 
+              </div>
+              
+              <div className={styles.hBox}>
+              <div className={styles.hBox3}>
+              <table className={styles.verticalTable1}> 
+                  <tbody>
+                    <tr>
+                      <th style={{backgroundColor: Colors[2][2]}}>Defense Quality</th>
+                      <td style={{backgroundColor: Colors[2][2]}}>%</td>
+                    </tr>
+                    <tr>
+                      <th style={{backgroundColor: Colors[2][1]}}>Weak</th>
+                      <td style={{backgroundColor: Colors[2][0]}}>{data.defenseQuality.weak}%</td>
+                    </tr>
+                    <tr>
+                      <th style={{backgroundColor: Colors[2][1]}}>Harassment</th>
+                      <td style={{backgroundColor: Colors[2][0]}}>{data.defenseQuality.harassment}%</td>
+                    </tr>
+                    <tr>
+                      <th style={{backgroundColor: Colors[2][1]}}>Game Changing</th>
+                      <td style={{backgroundColor: Colors[2][0]}}>{data.defenseQuality.gameChanging}%</td>
+                    </tr>
+                  </tbody>
+              </table>
+              
+            </div>
+
+            <div className={styles.hBox2}>
+            <table className={styles.horizontalTable}> 
                 <tbody>
                   <tr>
-                    <td style={{backgroundColor: Colors[2][2]}} rowSpan="2">Defense Quality</td>
-                    <td style={{backgroundColor: Colors[2][1]}}>Weak</td>
-                    <td style={{backgroundColor: Colors[2][1]}}>Harassment</td>
-                    <td style={{backgroundColor: Colors[2][1]}}>Game Changing</td>
+                    <td style={{backgroundColor: Colors[2][2]}} rowSpan="2">Fouls</td>
+                    <td style={{backgroundColor: Colors[2][1]}}>Median</td>
+                    <td style={{backgroundColor: Colors[2][1]}}>Mean</td>
                   </tr>
                   <tr>
-                    <td style={{backgroundColor: Colors[2][0]}}>{data.defenseQuality.weak}%</td>
-                    <td style={{backgroundColor: Colors[2][0]}}>{data.defenseQuality.harassment}%</td>
-                    <td style={{backgroundColor: Colors[2][0]}}>{data.defenseQuality.gameChanging}%</td>
+                    <td style={{backgroundColor: Colors[2][0]}}>{data.medianFouls}</td>
+                    <td style={{backgroundColor: Colors[2][0]}}>{data.meanFouls}</td>
                   </tr>
                 </tbody>
-              </table>
-              </div>
-            </div>
+            </table>
             <table className={styles.horizontalDTable}> 
               <tbody>
                 <tr>
                   <td style={{backgroundColor: Colors[2][2]}} rowSpan="2">Defense</td>
                   <td style={{backgroundColor: Colors[2][1]}}>AZ</td>
                   <td style={{backgroundColor: Colors[2][1]}}>NZ</td>
-                  <td style={{backgroundColor: Colors[2][1]}}>Trench</td>
-                  <td style={{backgroundColor: Colors[2][1]}}>Bump</td>
-                  <td style={{backgroundColor: Colors[2][1]}}>Tower</td>
-                  <td style={{backgroundColor: Colors[2][1]}}>Outpost</td>
-                  <td style={{backgroundColor: Colors[2][1]}}>Hub</td>
                 </tr>
                 <tr>
                   <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.allianceZone}%</td>
                   <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.neutralZone}%</td>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.trench}%</td>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.bump}%</td>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.tower}%</td>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.outpost}%</td>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.hub}%</td>
                 </tr>
               </tbody>
             </table>
+            </div>
+            </div>
             </div>
 
           <div className={styles.mobileTables}>
@@ -509,7 +532,25 @@ function TeamView() {
             </table>
             <div className={styles.vDefBox}>
               <div className={styles.vDefBox1}>
+                <div className={styles.vBox3}>
                 <VBox color1={Colors[2][2]} color2={Colors[2][0]} color3={Colors[2][2]} title={"Median Fuel"} value={Math.round(10*data.teleMedianFuel)/10} />
+                <table className={styles.horizontalTable}> 
+                <tbody>
+                  <tr>
+                    <td style={{backgroundColor: Colors[2][2]}} rowSpan="2">Fouls</td>
+                    <td style={{backgroundColor: Colors[2][1]}}>Median</td>
+                    <td style={{backgroundColor: Colors[2][1]}}>Mean</td>
+                  </tr>
+                  <tr>
+                    <td style={{backgroundColor: Colors[2][0]}}>{data.medianFouls}%</td>
+                    <td style={{backgroundColor: Colors[2][0]}}>{data.meanFouls}%</td>
+                  </tr>
+                </tbody>
+                </table>
+                </div>
+                </div>
+
+                <div className={styles.vBox4}>
                 <table className={styles.verticalTable1}> 
                   <tbody>
                     <tr>
@@ -530,7 +571,6 @@ function TeamView() {
                     </tr>
                   </tbody>
                 </table>
-              </div>
             <table className={styles.verticalDTable}> 
               <tbody>
                 <tr>
@@ -545,28 +585,9 @@ function TeamView() {
                   <th style={{backgroundColor: Colors[2][1]}}>NZ</th>
                   <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.neutralZone}%</td>
                 </tr>
-                <tr>
-                  <th style={{backgroundColor: Colors[2][1]}}>Trench</th>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.trench}%</td>
-                </tr>
-                <tr>
-                  <th style={{backgroundColor: Colors[2][1]}}>Bump</th>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.bump}%</td>
-                </tr>
-                <tr>
-                  <th style={{backgroundColor: Colors[2][1]}}>Tower</th>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.tower}%</td>
-                </tr>
-                <tr>
-                  <th style={{backgroundColor: Colors[2][1]}}>Outpost</th>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.outpost}%</td>
-                </tr>
-                <tr>
-                  <th style={{backgroundColor: Colors[2][1]}}>Hub</th>
-                  <td style={{backgroundColor: Colors[2][0]}}>{data.defenseLocation.hub}%</td>
-                </tr>
               </tbody>
             </table>
+            </div>
             </div>
           </div>
 

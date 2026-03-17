@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import EPALineChart from './components/EPALineChart';
 import Endgame from './components/Endgame';
 import Qualitative from './components/Qualitative';
-import PiecePlacement from './components/PiecePlacement';
 import { Chart, registerables } from 'chart.js';
 import Link from "next/link";
 
@@ -124,7 +123,7 @@ function ScoutingApp() {
     leave: false,
     autoClimb: 0,
     endgame: { none: 0, L1: 0, L2: 0, L3: 0, fail: 0},
-    qualitative: { fuelspeed: 0, maneuverability: 0, durability: 0, collectioncapacity: 0, passingspeed: 0, climbingspeed: 0, autodeclimbspeed: 0, bumpspeed: 0, defenseevasion: 0, aggression: 0, climbhazard: 0 }
+    qualitative: { fuelspeed: 0, maneuverability: 0, hoppercapacity: 0, passingquantity: 0, climbingspeed: 0, autodeclimbspeed: 0, defenseevasion: 0, climbhazard: 0 }
   };
 
   // Show loading until data is ready
@@ -269,14 +268,11 @@ function ScoutingApp() {
   const radarData = [
     { qual: 'fuelspeed', team1: filterNegative(data?.team1?.qualitative?.fuelspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.fuelspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.fuelspeed) || 0 },
     { qual: 'maneuverability', team1: filterNegative(data?.team1?.qualitative?.maneuverability) || 0, team2: filterNegative(data?.team2?.qualitative?.maneuverability) || 0, team3: filterNegative(data?.team3?.qualitative?.maneuverability) || 0 },
-    { qual: 'durability', team1: filterNegative(data?.team1?.qualitative?.durability) || 0, team2: filterNegative(data?.team2?.qualitative?.durability) || 0, team3: filterNegative(data?.team3?.qualitative?.durability) || 0 },
-    { qual: 'collectioncapacity', team1: filterNegative(data?.team1?.qualitative?.hoppercapacity) || 0, team2: filterNegative(data?.team2?.qualitative?.hoppercapacity) || 0, team3: filterNegative(data?.team3?.qualitative?.hoppercapacity) || 0 },
-    { qual: 'passingspeed', team1: filterNegative(data?.team1?.qualitative?.passingspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.passingspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.passingspeed) || 0 },
+    { qual: 'hoppercapacity', team1: filterNegative(data?.team1?.qualitative?.hoppercapacity) || 0, team2: filterNegative(data?.team2?.qualitative?.hoppercapacity) || 0, team3: filterNegative(data?.team3?.qualitative?.hoppercapacity) || 0 },
+    { qual: 'passingquantity', team1: filterNegative(data?.team1?.qualitative?.passingquantity) || 0, team2: filterNegative(data?.team2?.qualitative?.passingquantity) || 0, team3: filterNegative(data?.team3?.qualitative?.passingquantity) || 0 },
     { qual: 'climbingspeed', team1: filterNegative(data?.team1?.qualitative?.climbspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.climbspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.climbspeed) || 0 },
     { qual: 'autodeclimbspeed', team1: filterNegative(data?.team1?.qualitative?.autodeclimbspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.autodeclimbspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.autodeclimbspeed) || 0 },
-    { qual: 'bumpspeed', team1: filterNegative(data?.team1?.qualitative?.bumpspeed) || 0, team2: filterNegative(data?.team2?.qualitative?.bumpspeed) || 0, team3: filterNegative(data?.team3?.qualitative?.bumpspeed) || 0 },
     { qual: 'defenseevasion', team1: filterNegative(data?.team1?.qualitative?.defenseevasion) || 0, team2: filterNegative(data?.team2?.qualitative?.defenseevasion) || 0, team3: filterNegative(data?.team3?.qualitative?.defenseevasion) || 0 },
-    { qual: 'aggression', team1: filterNegative(data?.team1?.qualitative?.aggression) || 0, team2: filterNegative(data?.team2?.qualitative?.aggression) || 0, team3: filterNegative(data?.team3?.qualitative?.aggression) || 0 },
     { qual: 'climbhazard', team1: filterNegative(data?.team1?.qualitative?.climbhazard) || 0, team2: filterNegative(data?.team2?.qualitative?.climbhazard) || 0, team3: filterNegative(data?.team3?.qualitative?.climbhazard) || 0 }
   ];
 
@@ -284,14 +280,11 @@ function ScoutingApp() {
   const redRadarData = [
     { qual: 'fuelspeed', team1: filterNegative(data?.team4?.qualitative?.fuelspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.fuelspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.fuelspeed) || 0 },
     { qual: 'maneuverability', team1: filterNegative(data?.team4?.qualitative?.maneuverability) || 0, team2: filterNegative(data?.team5?.qualitative?.maneuverability) || 0, team3: filterNegative(data?.team6?.qualitative?.maneuverability) || 0 },
-    { qual: 'durability', team1: filterNegative(data?.team4?.qualitative?.durability) || 0, team2: filterNegative(data?.team5?.qualitative?.durability) || 0, team3: filterNegative(data?.team6?.qualitative?.durability) || 0 },
-    { qual: 'collectioncapacity', team1: filterNegative(data?.team4?.qualitative?.hoppercapacity) || 0, team2: filterNegative(data?.team5?.qualitative?.hoppercapacity) || 0, team3: filterNegative(data?.team6?.qualitative?.hoppercapacity) || 0 },
-    { qual: 'passingspeed', team1: filterNegative(data?.team4?.qualitative?.passingspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.passingspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.passingspeed) || 0 },
+    { qual: 'hoppercapacity', team1: filterNegative(data?.team4?.qualitative?.hoppercapacity) || 0, team2: filterNegative(data?.team5?.qualitative?.hoppercapacity) || 0, team3: filterNegative(data?.team6?.qualitative?.hoppercapacity) || 0 },
+    { qual: 'passingquantity', team1: filterNegative(data?.team4?.qualitative?.passingquantity) || 0, team2: filterNegative(data?.team5?.qualitative?.passingquantity) || 0, team3: filterNegative(data?.team6?.qualitative?.passingquantity) || 0 },
     { qual: 'climbingspeed', team1: filterNegative(data?.team4?.qualitative?.climbspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.climbspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.climbspeed) || 0 },
     { qual: 'autodeclimbspeed', team1: filterNegative(data?.team4?.qualitative?.autodeclimbspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.autodeclimbspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.autodeclimbspeed) || 0 },
-    { qual: 'bumpspeed', team1: filterNegative(data?.team4?.qualitative?.bumpspeed) || 0, team2: filterNegative(data?.team5?.qualitative?.bumpspeed) || 0, team3: filterNegative(data?.team6?.qualitative?.bumpspeed) || 0 },
     { qual: 'defenseevasion', team1: filterNegative(data?.team4?.qualitative?.defenseevasion) || 0, team2: filterNegative(data?.team5?.qualitative?.defenseevasion) || 0, team3: filterNegative(data?.team6?.qualitative?.defenseevasion) || 0 },
-    { qual: 'aggression', team1: filterNegative(data?.team4?.qualitative?.aggression) || 0, team2: filterNegative(data?.team5?.qualitative?.aggression) || 0, team3: filterNegative(data?.team6?.qualitative?.aggression) || 0 },
     { qual: 'climbhazard', team1: filterNegative(data?.team4?.qualitative?.climbhazard) || 0, team2: filterNegative(data?.team5?.qualitative?.climbhazard) || 0, team3: filterNegative(data?.team6?.qualitative?.climbhazard) || 0 }
   ];
 
@@ -308,7 +301,7 @@ function ScoutingApp() {
     data.team6 || defaultTeam
   ].map((teamData, idx) => {
     const c = colorIndex(idx);
-    const useLast3 = teamData.last3EPA != null || teamData.last3Passing != null;
+    const useLast3 = teamData.last3EPA != null || teamData.last3Fouls != null;
     return {
     number: teamData.team,
     name: teamData.teamName,
@@ -320,13 +313,7 @@ function ScoutingApp() {
     autoEPA: Math.round(teamData.last3Auto ?? teamData.displayAuto ?? 0),
     teleEPA: Math.round(teamData.last3Tele ?? teamData.displayTele ?? 0),
     endgameEPA: Math.round(teamData.last3End ?? teamData.displayEnd ?? 0),
-    passingFreq: useLast3 && teamData.last3Passing
-      ? { dump: teamData.last3Passing.dump, bulldozer: teamData.last3Passing.bulldozer, shooter: teamData.last3Passing.shooter }
-      : {
-          dump: teamData.passing?.dump ?? teamData.passingDump ?? teamData.dump ?? 0,
-          bulldozer: teamData.passing?.bulldozer ?? teamData.passingBulldozer ?? teamData.bulldozer ?? 0,
-          shooter: teamData.passing?.shooter ?? teamData.passingShooter ?? teamData.shooter ?? 0
-        },
+    fouls: { mean: teamData.foulsMean ?? 0, median: teamData.foulsMedian ?? 0 },
     // Defense Quality from DB "defense" column: 0=weak, 1=harassment, 2=game changing
     defenseQuality: (useLast3 && teamData.last3Defense)
       ? { weak: teamData.last3Defense.weak, harassment: teamData.last3Defense.harassment, gameChanging: teamData.last3Defense.gameChanging }
@@ -599,13 +586,16 @@ function TeamCard({ team }) {
       </div>
       <div className={styles.chartsRow}>
         <div className={styles.chartColumn}>
-          <h3>Passing Rel. Frequency</h3>
-          <div className={styles.chartWrapper}>
-            <PiecePlacement 
-              colors={[team.color, team.color, team.darkColor]}
-              matchMax={100}
-              passingData={team.passingFreq}
-            />
+          <h3>Fouls</h3>
+          <div className={styles.foulBox} style={{ borderColor: team.darkColor, backgroundColor: team.lightColor }}>
+            <div className={styles.foulStat}>
+              <span className={styles.foulLabel}>Mean</span>
+              <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.mean}</span>
+            </div>
+            <div className={styles.foulStat}>
+              <span className={styles.foulLabel}>Median</span>
+              <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.median}</span>
+            </div>
           </div>
         </div>
         <div className={styles.chartColumn}>

@@ -1,0 +1,295 @@
+.IncButton {
+    background-color: #9DE387;
+    border: 1px solid rgb(255, 255, 255); 
+    color: rgb(7, 85, 0);
+    padding: 5px 0px;
+    cursor: pointer;
+    width: 67px;
+    height: 67px;
+    border-radius: 50%;
+    margin-top: 80px;
+}
+
+.DecButton {
+    background-color: #FFC1C1; 
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(108, 0, 0);
+    padding: 5px 0px;
+    cursor: pointer;
+    width: 67px;
+    height: 67px;
+    border-radius: 50%;
+    margin-top: 80px;
+}
+
+.Success {
+    background-color: #87E47E;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 25px;
+    height: 43px;
+    width: 50px;
+}
+
+.Fail {
+    background-color: #FF7272;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 25px;
+    height: 43px;
+    width: 50px;
+}
+
+.Counter{
+    background-color: #66FFD4;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 25px;
+    height: 43px;
+    width: 50px;
+}
+
+.CounterButtonRight {
+    background-color: #CBFFF5; 
+    border: 1px solid black;
+    color: black;
+    padding: 5px 10px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+    
+}
+
+.CounterButtonLeft {
+    background-color: #CBFFF5; 
+    border: 1px solid black;
+    color: black;
+    padding: 5px 10px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+    
+}
+
+
+.NumericInput {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.Container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.NumericInput .label{
+    margin-bottom: 5px;
+    font-size: 18px;  
+}
+
+.incrementBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6.7px;
+}
+
+.decrementBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6.7px;
+}
+
+.input {
+    width: 125px;
+    height: 60px;
+    border-radius: 10px;
+    justify-content: center;
+    text-align: center;
+    font-size: 30px;
+    background-color:#CDF3FF;
+}
+
+.inputBox{
+    margin-top: 20px;
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.inputBox2{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 23px;
+}
+
+.line{
+    width: 170px;
+}
+
+@media screen and (max-width: 1150px) {
+    
+.SuccessButtonRight {
+    background-color: #CBFFD4;
+    border: 1px solid black; 
+    color: black;
+    padding: 5px 10px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+
+}
+
+.SuccessButtonLeft {
+    background-color: #CBFFD4;
+    border: 1px solid black; 
+    color: black;
+    padding: 5px 10px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+
+}
+
+
+.FailButtonRight {
+    background-color: #FFABAB; 
+    border: 1px solid black;
+    color: black;
+    padding: 5px 10px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+    
+}
+
+.FailButtonLeft {
+    background-color: #FFABAB; 
+    border: 1px solid black;
+    color: black;
+    padding: 5px 10px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+    
+    
+}
+
+.Success {
+    background-color: #87E47E;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 25px;
+    height: 43px;
+    width: 50px;
+}
+
+.Fail {
+    background-color: #FF7272;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 25px;
+    height: 43px;
+    width: 50px;
+}
+
+.Counter{
+    background-color: #66FFD4;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 25px;
+    height: 43px;
+    width: 50px;
+}
+
+.CounterButtonRight {
+    background-color: #CBFFF5; 
+    border: 1px solid black;
+    color: black;
+    padding: 5px 10px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+    
+}
+
+.CounterButtonLeft {
+    background-color: #CBFFF5; 
+    border: 1px solid black;
+    color: black;
+    padding: 5px 10px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    cursor: pointer;
+    width: 40px;
+    height: 45px;
+    
+}
+
+
+.NumericInput {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.Container {
+    display: flex;
+    flex-direction: column;
+}
+
+.incrementBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.decrementBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.NumericInput .label{
+    margin-bottom: 5px;
+    font-size: 18px;
+    
+}
+}
+
+.NumericInput {
+    margin-bottom: -20px;
+}
+
+.foulCounterBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: auto;
+}
+
+.fCommentBox {
+    display:block;
+}
+.fCommentBoxOff {
+    display: none;
+}
+
+

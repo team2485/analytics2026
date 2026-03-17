@@ -608,7 +608,7 @@
 }
 
 .desktopTables {
-   margin-top: -20px;
+   margin-top: -5px;
    display: block;
 }
 
@@ -619,8 +619,18 @@
 }
 .hBox1{
    display: flex;
-   flex-direction: column;
+   flex-direction: row;
    margin-bottom: 10px;
+   gap: 10px;
+}
+.hBox2{
+   display: flex;
+   flex-direction: column;
+}
+.hBox3{
+   display: flex;
+   flex-direction: row;
+   margin-top: 10px;
 }
 .horizontalTable1, .horizontalTable1 td {
    font-size: 13px;
@@ -646,6 +656,22 @@
    align-items: left;
    justify-content: left;
 }
+.verticalTable1, .verticalTable1 td {
+   font-size: 13px;
+   border: black 1px solid;
+   border-collapse: collapse;
+   padding: 4px;
+   width: fit-content;
+   height: 13px;
+   text-align: center;
+   flex-direction: row;
+   align-items: left;
+   justify-content: left;
+ }
+ .verticalTable1 th {
+   border: black 1px solid;
+   border-collapse: collapse;
+ }
 
 .mobileTables {
    display: none;
@@ -820,11 +846,10 @@
 
    .vDefBox {
       display: flex;
-      flex-direction: row;
-      gap: 10px;
+      flex-direction: column;
       align-items: center;
       margin-left: auto;
-      margin-right: auto;
+      margin-top: -20px;
    }
 
    .vDefBox1 {
@@ -832,6 +857,18 @@
       flex-direction: column;
       gap: 20px;
       margin-top: 25px;
+   }
+
+   .vBox3 {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+   }
+
+   .vBox4 {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
    }
 
    .verticalDTable, .verticalDTable td, .verticalDTable th {

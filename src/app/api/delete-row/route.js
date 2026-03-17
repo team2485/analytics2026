@@ -15,7 +15,7 @@ export async function POST(request) {
     return NextResponse.json({error: "Invalid id"}, {status: 400});
   }
 
-  await sql`DELETE FROM phd2026 WHERE id = ${id};`;
+  await sql`DELETE FROM sdd2026 WHERE id = ${id};`;
 
   return NextResponse.json({ message: "Row deleted successfully" }, {status: 200});
 }

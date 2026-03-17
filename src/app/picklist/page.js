@@ -26,7 +26,7 @@ export default function Picklist() {
     const urlParams = new URLSearchParams(window.location.search);
   
     // Weight keys filter
-    const weightKeys = ['epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency'];
+    const weightKeys = ['epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'trimmedepa'];
     const urlWeights = Object.fromEntries(
       Array.from(urlParams).filter(([key]) => weightKeys.includes(key))
     );
@@ -104,10 +104,10 @@ export default function Picklist() {
           <td><input id="last3epa" type="number" value={weights.last3epa || 0} name="last3epa" onChange={handleWeightChange}></input></td>
         </tr>
         <tr>
+          <td><label htmlFor="trimmedepa">Trimmed EPA:</label></td>
+          <td><input id="trimmedepa" type="number" value={weights.trimmedepa || 0} name="trimmedepa" onChange={handleWeightChange}></input></td>
           <td><label htmlFor="fuel">Fuel:</label></td>
           <td><input id="fuel" type="number" value={weights.fuel || 0} name="fuel" onChange={handleWeightChange}></input></td>
-          <td><label htmlFor="tower">Tower:</label></td>
-          <td><input id="tower" type="number" value={weights.tower || 0} name="tower" onChange={handleWeightChange}></input></td>
         </tr>
         <tr>
           <td><label htmlFor="passing">Passing:</label></td>
@@ -118,8 +118,8 @@ export default function Picklist() {
         <tr>
           <td><label htmlFor="auto">Auto:</label></td>
           <td><input id="auto" type="number" value={weights.auto || 0} name="auto" onChange={handleWeightChange}></input></td>
-          <td><label htmlFor="consistency">Cnstcy:</label></td>
-          <td><input id="consistency" type="number" value={weights.consistency || 0} name="consistency" onChange={handleWeightChange}></input></td>
+          <td><label htmlFor="tower">Tower:</label></td>
+          <td><input id="tower" type="number" value={weights.tower || 0} name="tower" onChange={handleWeightChange}></input></td>
         </tr>
       </tbody>
     </table>
@@ -354,12 +354,12 @@ const handleAllianceClear = () => {
             <th>Team</th>
             <th>EPA</th>
             <th>Last 3</th>
+            <th>Trimmed EPA</th>
             <th>Fuel</th>
-            <th>Tower</th>
             <th>Passing</th>
             <th>Defense</th>
             <th>Auto</th>
-            <th>Cnstcy</th>
+            <th>Tower</th>
             <th>Rating</th>
             <th>Comments</th>
           </tr>
@@ -387,12 +387,12 @@ const handleAllianceClear = () => {
                       </td>
                       <td style={{ backgroundColor: valueToColor(teamData.epa) }}>{roundToThree(teamData.epa)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.last3epa) }}>{roundToThree(teamData.last3epa)}</td>
+                      <td style={{ backgroundColor: valueToColor(teamData.trimmedepa) }}>{roundToThree(teamData.trimmedepa)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.fuel) }}>{roundToThree(teamData.fuel)}</td>
-                      <td style={{ backgroundColor: valueToColor(teamData.tower) }}>{roundToThree(teamData.tower)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.passing) }}>{roundToThree(teamData.passing)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.defense) }}>{roundToThree(teamData.defense)}</td>
                       <td style={{ backgroundColor: valueToColor(teamData.auto) }}>{roundToThree(teamData.auto)}</td>
-                      <td style={{ backgroundColor: valueToColor(teamData.consistency) }}>{roundToThree(teamData.consistency)}</td>
+                      <td style={{ backgroundColor: valueToColor(teamData.tower) }}>{roundToThree(teamData.tower)}</td>
                       <td>
                         {teamRatings[teamData.team] !== true &&
                           <button onClick={() => handleThumbsUp(teamData.team)}>✅</button>

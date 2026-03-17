@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const { rows: rawRows } = await sql`SELECT * FROM phd2026;`;
+    const { rows: rawRows } = await sql`SELECT * FROM sdd2026;`;
     const rows = rawRows.filter(
       (row) => !row.noshow && row.team != null && row.team !== '' && Number(row.team) > 0
     );

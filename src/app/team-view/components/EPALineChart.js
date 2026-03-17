@@ -64,6 +64,7 @@ export default function EPALineChart({
           <p>Match: {dataPoint.match}</p>
           <p>{displayLabel}: {dataPoint[label]}</p>
           <p>Status: {winStatus}</p>
+          {dataPoint.fouls != null ? <p>Fouls: {dataPoint.fouls}</p> : <p>Fouls: —</p>}
         </div>
       );
     }
