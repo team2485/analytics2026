@@ -134,7 +134,7 @@ export async function POST(req) {
   if (!_.isNumber(body.shootingmechanism) || (body.shootingmechanism !== 0 && body.shootingmechanism !== 1)) {
     body.shootingmechanism = Number(body.shootingmechanism) === 1 ? 1 : 0;
   }
-  body.fouls = Number(body.fouls) || 0;
+  body.fouls = Math.abs(Number(body.fouls)) || 0;
   const postmatchBooleans = ['bump', 'trench', 'stuckonfuel', 'stuckonbump', 'playeddefense'];
   for (const key of postmatchBooleans) {
     if (!_.isBoolean(body[key])) body[key] = false;
