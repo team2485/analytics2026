@@ -150,7 +150,7 @@ export async function POST(req) {
       _.isBoolean(body.stuckonfuel) &&
       _.isBoolean(body.stuckonbump) &&
       _.isBoolean(body.playeddefense) &&
-      _.isNumber(body.fouls) && body.fouls >= 0
+      _.isNumber(body.fouls)// && body.fouls >= 0
     )
   ) {
     return NextResponse.json({ message: "Invalid Postmatch Data!" }, { status: 400 });
