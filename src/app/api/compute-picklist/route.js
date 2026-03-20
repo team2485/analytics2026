@@ -194,8 +194,9 @@ export async function POST(request) {
         else if (type === 1 || (typeof type === 'string' && String(type).toLowerCase() === 'harassment')) score += 5;
         else if (type === 2 || (typeof type === 'string' && String(type).toLowerCase() === 'game changing')) score += 10;
       }
-      const foulRate = maxFoulsAvg > 0 ? (teamFoulsAvg[d.team] ?? 0) / maxFoulsAvg : 0;
-      return score * (1 - foulRate);
+      const foulRate = maxFoulsAvg > 0 ? Math.abs(teamFoulsAvg[d.team] ?? 0) / maxFoulsAvg : 0;
+      return score 
+      * (1 - foulRate);
     },
     consistency: d => teamConsistencyMap[d.team] ?? 0,
     trimmedepa: d => trimmedepaMap[d.team] ?? 0,

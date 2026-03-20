@@ -4,7 +4,7 @@ import styles from './FoulCounter.module.css';
 import CommentBox from './CommentBox';
 
 export default function FoulCounter({ visibleName, internalName, pieceType, min, max }) {
-    min = min || 0;
+    min = min || -99999;
     max = max || 99999;
 
     const [value, setValue] = useState(0);
