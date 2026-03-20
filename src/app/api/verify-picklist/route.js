@@ -48,6 +48,13 @@ export async function GET() {
       return (arr) => (validValues(arr).length > 0 ? validValues(arr).reduce((sum, v) => sum + v, 0) / validValues(arr).length : 0);
     }
 
+    // DB values may come back as booleans, or as strings like "true"/"false".
+    const isTrue = (v) => v === true || v === "true" || v === 1 || v === "1";
+    const parseDefenseType = (v) => {
+      const n = Number(v);
+      return n === 0 || n === 1 || n === 2 ? n : null;
+    };
+
     let teamTable = tidy(rows, groupBy(['team', 'match'], [summarizeAll(averageField)]));
     teamTable = tidy(teamTable, groupBy(['team'], [summarizeAll(averageField)]));
 
@@ -127,6 +134,70 @@ export async function GET() {
       teamPassingPct[team] = t.total > 0 ? (t.withPassing / t.total) * 100 : 0;
     });
 
+    // Defense (match-level, then averaged to team-level) to match compute-picklist.
+    const teamMatchDefense = {};
+    let maxFoulsMatch = 0;
+
+    rows.forEach((row) => {
+      const team = row.team;
+      const match = row.match;
+      if (!teamMatchDefense[team]) teamMatchDefense[team] = {};
+      if (!teamMatchDefense[team][match]) {
+        teamMatchDefense[team][match] = {
+          played: false,
+          defenseTypes: [],
+          foulsSum: 0,
+          foulsCount: 0,
+          foulsMean: 0,
+        };
+      }
+
+      const entry = teamMatchDefense[team][match];
+      const played = isTrue(row.defenseplayed ?? row.playeddefense);
+      if (played) entry.played = true;
+
+      const defenseType = parseDefenseType(row.defense);
+      if (played && defenseType !== null) {
+        entry.defenseTypes.push(defenseType);
+      }
+
+      const f = Number(row.fouls);
+      entry.foulsSum += Number.isFinite(f) ? Math.abs(f) : 0;
+      entry.foulsCount += 1;
+    });
+
+    for (const team in teamMatchDefense) {
+      for (const match in teamMatchDefense[team]) {
+        const entry = teamMatchDefense[team][match];
+        entry.foulsMean = entry.foulsCount > 0 ? entry.foulsSum / entry.foulsCount : 0;
+        if (entry.foulsMean > maxFoulsMatch) maxFoulsMatch = entry.foulsMean;
+      }
+    }
+
+    const teamDefenseMap = {};
+    for (const team in teamMatchDefense) {
+      let sum = 0;
+      let count = 0;
+      for (const match in teamMatchDefense[team]) {
+        const entry = teamMatchDefense[team][match];
+
+        let baseScore = 0;
+        if (entry.played) {
+          const type = entry.defenseTypes.length ? Math.max(...entry.defenseTypes) : 0;
+          if (type === 0) baseScore = 1;
+          else if (type === 1) baseScore = 5;
+          else if (type === 2) baseScore = 10;
+          else baseScore = 1;
+        }
+
+        const foulRate = maxFoulsMatch > 0 ? Math.abs(entry.foulsMean ?? 0) / maxFoulsMatch : 0;
+        const defenseMatch = baseScore * (1 - foulRate);
+        sum += defenseMatch;
+        count += 1;
+      }
+      teamDefenseMap[team] = count > 0 ? sum / count : 0;
+    }
+
     teamTable = tidy(teamTable, mutate({
       auto: (d) => calcAuto(d),
       epa: (d) => calcEPA(d),
@@ -134,14 +205,7 @@ export async function GET() {
       fuel: (d) => teamFuelAvg[d.team] ?? 0,
       tower: (d) => teamTowerAvg[d.team] ?? 0,
       passing: (d) => teamPassingPct[d.team] ?? 0,
-      defense: (d) => {
-        const played = d.defenseplayed ?? d.playeddefense;
-        if (played === false || played === null || played === undefined) return 0;
-        const type = d.defense;
-        if (type === 2 || (typeof type === 'string' && String(type).toLowerCase() === 'game changing')) return 10;
-        if (type === 1 || (typeof type === 'string' && String(type).toLowerCase() === 'harassment')) return 5;
-        return 1; // played but weak (type 0, 'weak', or unknown)
-      },
+      defense: (d) => teamDefenseMap[d.team] ?? 0,
       consistency: (d) => teamConsistencyMap[d.team] ?? 0,
     }), select(['team', 'epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency']));
 
