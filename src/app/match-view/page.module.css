@@ -590,7 +590,7 @@
     }
     
     .chartsRow {
-        flex-direction: column;
+        flex-direction: row;
     }
 
     .allianceColumn {

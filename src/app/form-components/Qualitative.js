@@ -87,13 +87,6 @@ export default function Qualitative ({ visibleName, internalName, description, s
                 </div>
             )}
 
-            {/* {rating == 0 && description=="Hopper Capacity" &&(
-
-                <div>
-                    0 - 5 Fuel
-                </div>
-            )} */}
-
             {rating >= 0 && rating < 5 && description=="Hopper Capacity" &&(
 
                 <div>

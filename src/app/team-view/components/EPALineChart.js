@@ -63,7 +63,7 @@ export default function EPALineChart({
         <div className={styles.customTooltip}>
           <p>Match: {dataPoint.match}</p>
           <p>{displayLabel}: {dataPoint[label]}</p>
-          <p>Status: {winStatus}</p>
+          <p>Auto: {winStatus}</p>
           {dataPoint.fouls != null ? <p>Fouls: {dataPoint.fouls}</p> : <p>Fouls: —</p>}
         </div>
       );

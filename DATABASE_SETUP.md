@@ -30,7 +30,7 @@ Example usage (already in your code):
 import { sql } from "@vercel/postgres";
 
 // This automatically uses POSTGRES_URL from your environment
-const data = await sql`SELECT * FROM scc2025;`;
+const data = await sql`SELECT * FROM sdd2026;`;
 ```
 
 ## Getting Your Database Credentials
