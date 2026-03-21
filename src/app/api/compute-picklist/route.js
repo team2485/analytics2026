@@ -29,6 +29,13 @@ export async function POST(request) {
       : 0;    
   }
 
+  // DB values may come back as booleans, or as strings like "true"/"false".
+  const isTrue = (v) => v === true || v === "true" || v === 1 || v === "1";
+  const parseDefenseType = (v) => {
+    const n = Number(v);
+    return n === 0 || n === 1 || n === 2 ? n : null;
+  };
+
   // Pre-process: remove no-shows and invalid teams
   rows = rows.filter(row => !row.noshow && row.team != null && row.team !== '' && Number(row.team) > 0);
 
@@ -161,19 +168,71 @@ export async function POST(request) {
     teamPassingPct[team] = t.total > 0 ? (t.withPassing / t.total) * 100 : 0;
   });
 
-  const teamFoulsMap = {};
-  rows.forEach(row => {
+  // Defense: compute at team+match level first, then average into a team-level metric.
+  // - defense type is categorical (0/1/2), so we aggregate it with MAX (2>1>0)
+  // - foul penalty is applied per match, then averaged
+  const teamMatchDefense = {};
+  let maxFoulsMatch = 0;
+
+  rows.forEach((row) => {
     const team = row.team;
-    if (!teamFoulsMap[team]) teamFoulsMap[team] = { sum: 0, count: 0 };
-    teamFoulsMap[team].sum += (Number(row.fouls) || 0);
-    teamFoulsMap[team].count += 1;
+    const match = row.match;
+    if (!teamMatchDefense[team]) teamMatchDefense[team] = {};
+    if (!teamMatchDefense[team][match]) {
+      teamMatchDefense[team][match] = {
+        played: false,
+        defenseTypes: [],
+        foulsSum: 0,
+        foulsCount: 0,
+        foulsMean: 0,
+      };
+    }
+
+    const entry = teamMatchDefense[team][match];
+    const played = isTrue(row.defenseplayed ?? row.playeddefense);
+    if (played) entry.played = true;
+
+    const defenseType = parseDefenseType(row.defense);
+    if (played && defenseType !== null) {
+      entry.defenseTypes.push(defenseType);
+    }
+
+    const f = Number(row.fouls);
+    entry.foulsSum += Number.isFinite(f) ? Math.abs(f) : 0;
+    entry.foulsCount += 1;
   });
-  const teamFoulsAvg = {};
-  let maxFoulsAvg = 0;
-  for (const team in teamFoulsMap) {
-    const t = teamFoulsMap[team];
-    teamFoulsAvg[team] = t.count > 0 ? t.sum / t.count : 0;
-    if (teamFoulsAvg[team] > maxFoulsAvg) maxFoulsAvg = teamFoulsAvg[team];
+
+  for (const team in teamMatchDefense) {
+    for (const match in teamMatchDefense[team]) {
+      const entry = teamMatchDefense[team][match];
+      entry.foulsMean = entry.foulsCount > 0 ? entry.foulsSum / entry.foulsCount : 0;
+      if (entry.foulsMean > maxFoulsMatch) maxFoulsMatch = entry.foulsMean;
+    }
+  }
+
+  const teamDefenseMap = {};
+  for (const team in teamMatchDefense) {
+    let sum = 0;
+    let count = 0;
+    for (const match in teamMatchDefense[team]) {
+      const entry = teamMatchDefense[team][match];
+
+      let baseScore = 0;
+      if (entry.played) {
+        const type = entry.defenseTypes.length ? Math.max(...entry.defenseTypes) : 0;
+        if (type === 0) baseScore = 1;
+        else if (type === 1) baseScore = 5;
+        else if (type === 2) baseScore = 10;
+        else baseScore = 1;
+      }
+
+      const foulRate = maxFoulsMatch > 0 ? Math.abs(entry.foulsMean ?? 0) / maxFoulsMatch : 0;
+      const defenseMatch = baseScore * (1 - foulRate);
+      sum += defenseMatch;
+      count += 1;
+    }
+
+    teamDefenseMap[team] = count > 0 ? sum / count : 0;
   }
 
   teamTable = tidy(teamTable, mutate({
@@ -183,20 +242,7 @@ export async function POST(request) {
     fuel: d => teamFuelAvg[d.team] ?? 0,
     tower: d => teamTowerAvg[d.team] ?? 0,
     passing: d => teamPassingPct[d.team] ?? 0,
-    defense: d => {
-      const played = d.defenseplayed ?? d.playeddefense;
-      if (played === false || played === null || played === undefined) return 0;
-      let score = 0;
-      if (typeof played === 'number' && played > 0) { score = played * 10; }
-      else {
-        const type = d.defense;
-        if (type === 0 || (typeof type === 'string' && String(type).toLowerCase() === 'weak')) score += 1;
-        else if (type === 1 || (typeof type === 'string' && String(type).toLowerCase() === 'harassment')) score += 5;
-        else if (type === 2 || (typeof type === 'string' && String(type).toLowerCase() === 'game changing')) score += 10;
-      }
-      const foulRate = maxFoulsAvg > 0 ? (teamFoulsAvg[d.team] ?? 0) / maxFoulsAvg : 0;
-      return score * (1 - foulRate);
-    },
+    defense: d => teamDefenseMap[d.team] ?? 0,
     consistency: d => teamConsistencyMap[d.team] ?? 0,
     trimmedepa: d => trimmedepaMap[d.team] ?? 0,
   }), select(['team', 'epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency', 'trimmedepa']));

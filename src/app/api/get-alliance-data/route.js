@@ -124,7 +124,7 @@ function initializeTeamData(row, auto, tele, end, frcAPITeamInfo) {
     endgame: createEndgameData(row.endclimbposition),
     // defense: 0=weak, 1=harassment, 2=game changing (only count when played defense)
     defense: countDefenseRow(row),
-    foulsArray: [Number(row.fouls) || 0],
+    foulsArray: [Math.abs(Number(row.fouls) || 0)],
     qualitative: {
       climbhazard: row.climbhazard,
       hoppercapacity: row.hoppercapacity,
@@ -180,7 +180,7 @@ function accumulateTeamData(teamData, row, auto, tele, end) {
   teamData.defense.harassment += dCount.harassment;
   teamData.defense.gameChanging += dCount.gameChanging;
 
-  teamData.foulsArray.push(Number(row.fouls) || 0);
+  teamData.foulsArray.push(Math.abs(Number(row.fouls) || 0));
 
   // Accumulate qualitative ratings (sum them for averaging later)
   teamData.qualitative.climbhazard += row.climbhazard || 0;
@@ -373,7 +373,7 @@ function calculateLast3Charts(responseObject, rows) {
     }
 
     // Fouls: mean and median over last 3 matches
-    const foulValues = last3Rows.map(r => Number(r.fouls) || 0);
+    const foulValues = last3Rows.map(r => Math.abs(Number(r.fouls) || 0));
     const foulsMean = Math.round((foulValues.reduce((a, b) => a + b, 0) / foulValues.length) * 10) / 10;
     const sortedFouls = [...foulValues].sort((a, b) => a - b);
     const foulMid = Math.floor(sortedFouls.length / 2);

@@ -143,8 +143,8 @@ function TeamView() {
        bumpTrav: Boolean(api.bump),
        trenchTrav: Boolean(api.trench),
        wideClimb: Boolean(api.wideClimb ?? api.wideclimb),
-       meanFouls: 0,
-       medianFouls: 0,
+      meanFouls: round10(api.meanFouls),
+      medianFouls: round10(api.medianFouls),
      };
    }
 
@@ -542,8 +542,8 @@ function TeamView() {
                     <td style={{backgroundColor: Colors[2][1]}}>Mean</td>
                   </tr>
                   <tr>
-                    <td style={{backgroundColor: Colors[2][0]}}>{data.medianFouls}%</td>
-                    <td style={{backgroundColor: Colors[2][0]}}>{data.meanFouls}%</td>
+                    <td style={{backgroundColor: Colors[2][0]}}>{data.medianFouls}</td>
+                    <td style={{backgroundColor: Colors[2][0]}}>{data.meanFouls}</td>
                   </tr>
                 </tbody>
                 </table>

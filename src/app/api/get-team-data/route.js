@@ -357,6 +357,18 @@ export async function GET(request) {
           const stuck = arr.filter(row => row.stuckonbump === true).length;
           return total > 0 ? (stuck / total) * 100 : 0;
         },
+        meanFouls: arr => {
+          const foulValues = arr.map(row => Math.abs(Number(row.fouls) || 0));
+          return foulValues.length > 0 ? foulValues.reduce((a, b) => a + b, 0) / foulValues.length : 0;
+        },
+        medianFouls: arr => {
+          const foulValues = arr.map(row => Math.abs(Number(row.fouls) || 0)).sort((a, b) => a - b);
+          if (foulValues.length === 0) return 0;
+          const mid = Math.floor(foulValues.length / 2);
+          return foulValues.length % 2 === 0
+            ? (foulValues[mid - 1] + foulValues[mid]) / 2
+            : foulValues[mid];
+        },
     
         breakdown: arr => {
           const uniqueMatches = new Set(arr.map(row => row.match));
@@ -853,7 +865,7 @@ function aggregateByMatch(dataArray) {
           return wins >= withVal.length / 2;
         },
         fouls: (items) => {
-          const valid = items.map(d => Number(d.fouls)).filter(v => Number.isFinite(v));
+          const valid = items.map(d => Math.abs(Number(d.fouls))).filter(v => Number.isFinite(v));
           return valid.length ? Math.round((valid.reduce((a, b) => a + b, 0) / valid.length) * 10) / 10 : undefined;
         },
       }),
