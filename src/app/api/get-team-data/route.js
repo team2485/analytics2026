@@ -16,7 +16,62 @@ export async function GET(request) {
 
   // Fetch team data from database
   let data = await sql`SELECT * FROM scc2025 WHERE team = ${team};`;
-  const rows = data.rows;
+  // Fetch match data from TBA to determine winauto
+  const tbaMatches = await fetch(
+    `https://www.thebluealliance.com/api/v3/team/frc${team}/matches/2025`,
+    {
+      headers: {
+        "X-TBA-Auth-Key": process.env.TBA_AUTH_KEY,
+        "Accept": "application/json",
+      },
+    }
+  )
+    .then(resp => {
+      if (resp.status !== 200) {
+        console.error(`TBA Matches Error: status ${resp.status}`);
+        return [];
+      }
+      return resp.json();
+    })
+    .catch(() => []);
+
+  // Build a map of { matchNumber → winauto (boolean) }
+  const winautoMap = {};
+  const teamKey = `frc${team}`;
+
+  tbaMatches.forEach(match => {
+    if (!match.score_breakdown || !match.alliances) return;
+
+    const redTeams  = match.alliances.red?.team_keys  ?? [];
+    const blueTeams = match.alliances.blue?.team_keys ?? [];
+
+    let teamAlliance = null;
+    if (redTeams.includes(teamKey))       teamAlliance = "red";
+    else if (blueTeams.includes(teamKey)) teamAlliance = "blue";
+    else return;
+
+    const opponentAlliance = teamAlliance === "red" ? "blue" : "red";
+
+    const teamAutoPoints     = match.score_breakdown[teamAlliance]?.autoPoints     ?? 0;
+    const opponentAutoPoints = match.score_breakdown[opponentAlliance]?.autoPoints ?? 0;
+
+    // Team auto points > opponent auto points = win (true)
+    // Team auto points < opponent auto points = lose (false)
+    // Tie = lose (false)
+    winautoMap[match.match_number] = teamAutoPoints > opponentAutoPoints;
+  });
+
+  console.log("winautoMap from TBA:", winautoMap);
+
+// Override winauto on every scouted row using TBA data.
+// Falls back to the scouted value if TBA has no entry for that match number.
+const rows = data.rows.map(row => ({
+  ...row,
+  winauto:
+    winautoMap[row.match] !== undefined
+      ? winautoMap[row.match]
+      : row.winauto,
+}));
 
   if (rows.length === 0) {
     return NextResponse.json({ message: `ERROR: No data for team ${team}` }, { status: 404 });
