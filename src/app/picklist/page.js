@@ -112,7 +112,7 @@ export default function Picklist() {
         <tr>
           <td><label htmlFor="passing">Passing:</label></td>
           <td><input id="passing" type="number" value={weights.passing || 0} name="passing" onChange={handleWeightChange}></input></td>
-          <td><label htmlFor="defense">Defense:</label></td>
+          <td><label htmlFor="defense">Defense (incl. maneuverability):</label></td>
           <td><input id="defense" type="number" value={weights.defense || 0} name="defense" onChange={handleWeightChange}></input></td>
         </tr>
         <tr>
@@ -357,7 +357,7 @@ const handleAllianceClear = () => {
             <th>Trimmed EPA</th>
             <th>Fuel</th>
             <th>Passing</th>
-            <th>Defense</th>
+            <th>Defense (maneuver.)</th>
             <th>Auto</th>
             <th>Tower</th>
             <th>Rating</th>

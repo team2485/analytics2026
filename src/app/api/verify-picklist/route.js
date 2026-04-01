@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { sql } from '@vercel/postgres';
 import { tidy, mutate, select, summarizeAll, groupBy, summarize } from '@tidyjs/tidy';
 import { calcAuto, calcEPA } from "@/util/calculations";
+import { avgManeuverabilityByTeam, blendDefenseMapWithManeuver } from "@/util/picklistDefenseBlend";
 
 /** Per-scout foul total for defense penalty: major + minor (matches compute-picklist). */
 function foulScalar(row) {
@@ -204,6 +205,9 @@ export async function GET() {
       teamDefenseMap[team] = count > 0 ? sum / count : 0;
     }
 
+    const maneuverAvgByTeam = avgManeuverabilityByTeam(rows);
+    const teamDefenseBlendedMap = blendDefenseMapWithManeuver(teamDefenseMap, maneuverAvgByTeam);
+
     teamTable = tidy(teamTable, mutate({
       auto: (d) => calcAuto(d),
       epa: (d) => calcEPA(d),
@@ -211,7 +215,7 @@ export async function GET() {
       fuel: (d) => teamFuelAvg[d.team] ?? 0,
       tower: (d) => teamTowerAvg[d.team] ?? 0,
       passing: (d) => teamPassingPct[d.team] ?? 0,
-      defense: (d) => teamDefenseMap[d.team] ?? 0,
+      defense: (d) => teamDefenseBlendedMap[d.team] ?? 0,
       consistency: (d) => teamConsistencyMap[d.team] ?? 0,
     }), select(['team', 'epa', 'last3epa', 'fuel', 'tower', 'passing', 'defense', 'auto', 'consistency']));
 
