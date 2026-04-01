@@ -587,17 +587,39 @@ function TeamCard({ team }) {
       <div className={styles.chartsRow}>
         <div className={styles.chartColumn}>
           <h3>Fouls</h3>
-          <div className={styles.foulBox} style={{ borderColor: team.darkColor, backgroundColor: team.lightColor }}>
-            <div className={styles.foulStat}>
-              <span className={styles.foulLabel}>Mean</span>
-              <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.mean}</span>
+          <div className={styles.foulTypeBox}>
+            <div className={styles.foulTypeMajor} style={{ borderColor: team.darkColor, backgroundColor: team.color }}>
+              <span>Major</span>
             </div>
-            <div className={styles.foulStat}>
-              <span className={styles.foulLabel}>Median</span>
-              <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.median}</span>
+            <div className={styles.foulTypeMinor} style={{ borderColor: team.darkColor, backgroundColor: team.color }}>
+              <span>Minor</span>
             </div>
           </div>
+          <div className={styles.foulSquare}>
+            <div className={styles.foulBoxMajor} style={{ borderColor: team.darkColor, backgroundColor: team.lightColor }}>
+              
+              <div className={styles.foulStat}>
+                <span className={styles.foulLabel}>Mean</span>
+                <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.mean}</span>
+              </div>
+              <div className={styles.foulStat}>
+                <span className={styles.foulLabel}>Median</span>
+                <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.median}</span>
+              </div>
+            </div>
+            <div className={styles.foulBoxMinor} style={{ borderColor: team.darkColor, backgroundColor: team.lightColor }}>
+              <div className={styles.foulStat}>
+                <span className={styles.foulLabel}>Mean</span>
+                <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.mean}</span>
+              </div>
+              <div className={styles.foulStat}>
+                <span className={styles.foulLabel}>Median</span>
+                <span className={styles.foulValue} style={{ color: team.darkColor }}>{team.fouls.median}</span>
+              </div>
+              </div>
+            </div>
         </div>
+
         <div className={styles.chartColumn}>
           <h3>Defense Quality</h3>
           <div className={styles.chartWrapper}>
