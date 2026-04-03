@@ -78,7 +78,7 @@ export async function GET(request) {
   }
 
   const tbaHeaders = { 'X-TBA-Auth-Key': process.env.TBA_AUTH_KEY, 'Accept': 'application/json' };
-  const TBA_EVENT_KEY = '2026casnd';
+  const TBA_EVENT_KEY = '2026dcmp';
 
   const [teamName, tbaMatchData] = await Promise.all([
     fetch(`https://www.thebluealliance.com/api/v3/team/frc${team}/simple`, { headers: tbaHeaders })

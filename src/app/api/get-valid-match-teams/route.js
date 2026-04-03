@@ -16,7 +16,7 @@ export async function GET(request) {
   try {
     // Fetch match data from The Blue Alliance API
     const response = await fetch(
-      `https://www.thebluealliance.com/api/v3/event/2026casnd/teams`,
+      `https://www.thebluealliance.com/api/v3/event/2026dcmp/teams`,
       {
         headers: {
           "X-TBA-Auth-Key": process.env.TBA_AUTH_KEY,
