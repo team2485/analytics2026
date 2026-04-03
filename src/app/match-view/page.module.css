@@ -674,7 +674,7 @@
         margin-bottom: 50px;
         display: flex;
         flex-direction: column;
-        flex-wrap: wrap;
+        /* flex-wrap: wrap; */
     }
 
     .teamRow {
