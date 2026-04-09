@@ -236,14 +236,14 @@ function ScoutingApp() {
 
   const blueRPs = {
     victory: blueTotal > redTotal,
-    energized: blueFuel >= 100,
+    energized: blueFuel >= 240,
     supercharged: blueFuel >= 360,
     traversal: blueClimb >= 50
   };
 
   const redRPs = {
     victory: redTotal > blueTotal,
-    energized: redFuel >= 100,
+    energized: redFuel >= 240,
     supercharged: redFuel >= 360,
     traversal: redClimb >= 50
   };

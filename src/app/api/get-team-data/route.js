@@ -78,7 +78,7 @@ export async function GET(request) {
   }
 
   const tbaHeaders = { 'X-TBA-Auth-Key': process.env.TBA_AUTH_KEY, 'Accept': 'application/json' };
-  const TBA_EVENT_KEY = '2026casnd';
+  const TBA_EVENT_KEY = '2026cascmp';
 
   const [teamName, tbaMatchData] = await Promise.all([
     fetch(`https://www.thebluealliance.com/api/v3/team/frc${team}/simple`, { headers: tbaHeaders })
@@ -441,10 +441,10 @@ export async function GET(request) {
             }
           });
           
-          const result = Object.entries(commentsByMatch)
-            .sort((a, b) => Number(a[0]) - Number(b[0]))
-            .map(([match, comments]) => `Match ${match}: ${comments.join(', ')}`);
-
+          const result = Object.entries(commentsByMatch).map(([match, comments]) => 
+            ` *Match ${match}: ${comments.join(' -- ')}*`
+          );
+          
           return result.length > 0 ? result : [];
         },
         

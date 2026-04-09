@@ -515,7 +515,7 @@ function TeamView() {
             <table className={styles.horizontalTable}>
                 <tbody>
                   <tr>
-                    <td style={{ backgroundColor: Colors[2][1] }} aria-hidden="true" />
+                    <td style={{ backgroundColor: 'white', borderTop: 'hidden', borderLeft: 'hidden', borderBottomStyle: 'none', borderRightStyle: 'none' }} aria-hidden="true" />
                     <td style={{ backgroundColor: Colors[2][1] }}>Mn. Fouls</td>
                     <td style={{ backgroundColor: Colors[2][1] }}>Mj. Fouls</td>
                   </tr>
@@ -573,7 +573,7 @@ function TeamView() {
                 <table className={styles.horizontalTable}>
                 <tbody>
                   <tr>
-                    <td style={{ backgroundColor: Colors[2][1] }} aria-hidden="true" />
+                    <td style={{ backgroundColor: 'white', borderTop: 'hidden', borderLeft: 'hidden', borderBottomStyle: 'none', borderRightStyle: 'none' }} aria-hidden="true" />
                     <td style={{ backgroundColor: Colors[2][1] }}>Mn. Fouls</td>
                     <td style={{ backgroundColor: Colors[2][1] }}>Mj. Fouls</td>
                   </tr>
